@@ -91,61 +91,13 @@ body {
 }
 .hero-btn:hover { background: var(--accent-dk); }
 
-/* Main content grid */
-.main-grid {
-  display: grid;
-  grid-template-columns: 1fr 340px;
-  gap: 14px;
-  align-items: start;
-}
-@media (max-width: 720px) { .main-grid { grid-template-columns: 1fr; } }
-
-/* Card */
-.card {
-  background: var(--card-bg);
-  border-radius: 10px;
-  padding: 18px 20px;
-  border: 1px solid var(--border);
-}
-
-/* Article list */
-.article-list { display: flex; flex-direction: column; gap: 0; }
-.article-item {
-  display: flex;
-  align-items: flex-start;
-  justify-content: space-between;
-  gap: 10px;
-  padding: 10px 0;
-  border-bottom: 1px solid var(--border);
-  text-decoration: none;
-  color: inherit;
-  transition: background 0.1s;
-}
-.article-item:last-child { border-bottom: none; }
-.article-item:hover .article-title { color: var(--accent); text-decoration: underline; }
-.article-title { font-size: 13px; font-weight: 600; color: var(--text); flex: 1; }
-.article-meta { display: flex; flex-direction: column; align-items: flex-end; gap: 4px; flex-shrink: 0; }
-.article-date { font-size: 10px; color: var(--text-lt); white-space: nowrap; }
-.article-tags { display: flex; gap: 3px; flex-wrap: wrap; justify-content: flex-end; }
-.article-tag {
-  font-size: 10px; font-weight: 600;
-  background: var(--accent-lt); color: var(--accent);
-  border: 1px solid var(--border-md);
-  border-radius: 4px; padding: 1px 5px;
-}
-.article-loading { font-size: 12px; color: var(--text-lt); padding: 12px 0; }
-.article-all-link {
-  display: block; text-align: right; margin-top: 10px;
-  font-size: 12px; font-weight: 600; color: var(--accent); text-decoration: none;
-}
-.article-all-link:hover { text-decoration: underline; }
-
 /* X embed */
 .x-card {
   background: var(--card-bg);
   border-radius: 10px;
   border: 1px solid var(--border);
   overflow: hidden;
+  margin-bottom: 20px;
 }
 .x-header {
   padding: 14px 16px 10px;
@@ -154,7 +106,7 @@ body {
 }
 .x-header-icon { font-size: 16px; }
 .x-header-title { font-size: 12px; font-weight: 700; color: var(--text-md); letter-spacing: 0.05em; text-transform: uppercase; }
-.x-timeline-wrap { padding: 8px; max-height: 520px; overflow-y: auto; }
+.x-timeline-wrap { padding: 8px; }
 
 /* Footer */
 .footer {
@@ -194,38 +146,23 @@ body {
     </div>
   </div>
 
-  <!-- Main: 最新記事 + X -->
-  <div class="main-grid">
-
-    <!-- 最新記事 -->
-    <div class="card">
-      <div class="section-title">📰 最新記事（Notionデータベース）</div>
-      <div class="article-list" id="article-list">
-        <div class="article-loading">読み込み中…</div>
-      </div>
-      <a class="article-all-link" href="https://fuchsia-tiglon-5dc.notion.site/32672d90504a8010a5dfc8ff1b0519c8" target="_blank" rel="noopener">すべての記事を見る →</a>
+  <!-- X タイムライン -->
+  <div class="x-card">
+    <div class="x-header">
+      <span class="x-header-icon">𝕏</span>
+      <span class="x-header-title">最新投稿 @JK1694619382592</span>
     </div>
-
-    <!-- X タイムライン -->
-    <div class="x-card">
-      <div class="x-header">
-        <span class="x-header-icon">𝕏</span>
-        <span class="x-header-title">更新情報 @JK1694619382592</span>
-      </div>
-      <div class="x-timeline-wrap">
-        <a class="twitter-timeline"
-           data-lang="ja"
-           data-height="480"
-           data-theme="light"
-           data-chrome="noheader nofooter noborders"
-           href="https://twitter.com/JK1694619382592">
-          Tweets by JK1694619382592
-        </a>
-        <script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
-      </div>
+    <div class="x-timeline-wrap">
+      <a class="twitter-timeline"
+         data-lang="ja"
+         data-height="500"
+         data-theme="light"
+         data-chrome="noheader nofooter noborders"
+         href="https://x.com/JK1694619382592">
+        読み込み中...
+      </a>
     </div>
-
-  </div><!-- /main-grid -->
+  </div>
 
   <!-- Footer -->
   <div class="footer">
@@ -234,38 +171,6 @@ body {
 
 </div><!-- /app -->
 
-<script>
-// 最新記事を取得して表示
-async function loadArticles() {
-  const list = document.getElementById('article-list');
-  try {
-    const res = await fetch('/.netlify/functions/articles?limit=10');
-    if (!res.ok) throw new Error('fetch failed');
-    const articles = await res.json();
-    if (!articles.length) {
-      list.innerHTML = '<div class="article-loading">記事がありません</div>';
-      return;
-    }
-    list.innerHTML = articles.map(a => {
-      const date = a.createdAt ? new Date(a.createdAt).toLocaleDateString('ja-JP', { year:'numeric', month:'short', day:'numeric' }) : '';
-      const tags = (a.categories || []).slice(0, 2).map(c =>
-        `<span class="article-tag">${c}</span>`
-      ).join('');
-      return `
-        <a class="article-item" href="${a.publicUrl}" target="_blank" rel="noopener">
-          <span class="article-title">${a.title}</span>
-          <span class="article-meta">
-            ${date ? `<span class="article-date">${date}</span>` : ''}
-            ${tags ? `<span class="article-tags">${tags}</span>` : ''}
-          </span>
-        </a>`;
-    }).join('');
-  } catch (e) {
-    list.innerHTML = '<div class="article-loading">記事の読み込みに失敗しました</div>';
-  }
-}
-
-loadArticles();
-</script>
+<script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
 </body>
 </html>
