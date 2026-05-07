@@ -1,0 +1,3558 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>実務支援</title>
+<style>
+:root {
+  --bg:        #f2ede6;
+  --card-bg:   #faf7f2;
+  --border:    #d9cfc2;
+  --border-md: #c4b49a;
+  --accent:    #6b5a42;
+  --accent-dk: #3d2e1e;
+  --accent-lt: #f0e8d8;
+  --text:      #2d2418;
+  --text-md:   #7d6b56;
+  --text-lt:   #a8947e;
+  color-scheme: light;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Helvetica Neue', sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  font-size: 14px;
+  line-height: 1.5;
+  min-height: 100vh;
+}
+
+.app { max-width: 960px; margin: 0 auto; padding: 20px 16px; }
+
+/* ===== Header ===== */
+.header {
+  background: var(--accent-dk);
+  color: #f5ede0;
+  border-radius: 12px;
+  padding: 20px 24px;
+  margin-bottom: 16px;
+}
+.header h1 { font-size: 18px; font-weight: 700; letter-spacing: 0.02em; }
+.header .subtitle { font-size: 12px; opacity: 0.6; margin-top: 4px; }
+
+/* ===== Tab Navigation ===== */
+.tab-nav {
+  display: flex;
+  gap: 3px;
+  background: var(--card-bg);
+  border-radius: 10px;
+  padding: 5px;
+  margin-bottom: 16px;
+  border: 1px solid var(--border);
+  flex-wrap: wrap;
+}
+.tab-btn {
+  flex: 1;
+  min-width: 110px;
+  padding: 8px 10px;
+  border: none;
+  background: transparent;
+  border-radius: 7px;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--text-md);
+  cursor: pointer;
+  transition: all 0.15s;
+  white-space: nowrap;
+  text-align: center;
+}
+.tab-btn:hover { background: var(--accent-lt); color: var(--accent-dk); }
+.tab-btn.active {
+  background: var(--accent);
+  color: #f5ede0;
+}
+
+/* ===== Tab Content ===== */
+.tab-content { display: none; }
+.tab-content.active { display: block; }
+
+/* ===== Cards ===== */
+.card {
+  background: var(--card-bg);
+  border-radius: 10px;
+  padding: 18px 20px;
+  margin-bottom: 14px;
+  border: 1px solid var(--border);
+}
+.section-title {
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--text-md);
+  text-transform: uppercase;
+  letter-spacing: 0.9px;
+  margin-bottom: 14px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+/* ===== Forms ===== */
+.lookup-form {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+.lookup-form select,
+.lookup-form input[type="text"] {
+  padding: 9px 12px;
+  border: 1px solid var(--border);
+  border-radius: 7px;
+  font-size: 13px;
+  background: #fff;
+  color: var(--text);
+  outline: none;
+  transition: border-color 0.2s;
+}
+.lookup-form select:focus,
+.lookup-form input[type="text"]:focus { border-color: var(--accent); }
+.lookup-form select { min-width: 200px; cursor: pointer; }
+.lookup-form input[type="text"] { flex: 1; min-width: 200px; }
+
+/* ===== Buttons ===== */
+.btn-primary {
+  background: var(--accent);
+  color: #f5ede0;
+  border: none;
+  padding: 9px 18px;
+  border-radius: 7px;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: background 0.2s;
+}
+.btn-primary:hover { background: var(--accent-dk); }
+
+.btn-open {
+  background: var(--accent);
+  color: #f5ede0;
+  text-decoration: none;
+  padding: 6px 14px;
+  border-radius: 7px;
+  font-size: 12px;
+  font-weight: 700;
+  white-space: nowrap;
+  transition: background 0.2s;
+  display: inline-block;
+}
+.btn-open:hover { background: var(--accent-dk); }
+
+/* ===== Result box ===== */
+.result-box {
+  margin-top: 12px;
+  padding: 11px 14px;
+  background: var(--accent-lt);
+  border: 1px solid var(--border-md);
+  border-radius: 8px;
+  display: none;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+.result-box.show { display: flex; }
+.result-url { color: var(--accent); font-size: 12px; word-break: break-all; flex: 1; }
+
+/* ===== Carrier badge ===== */
+.carrier-badge {
+  display: inline-block;
+  padding: 3px 9px;
+  border-radius: 10px;
+  font-size: 11px;
+  font-weight: 700;
+}
+.c-Maersk     { background:#e8e4dc; color:#3d2e1e; }
+.c-MSC        { background:#ede8e0; color:#3d2e1e; }
+.c-CMACGM     { background:#e8e4dc; color:#3d2e1e; }
+.c-Evergreen  { background:#e4e8e0; color:#2a3a22; }
+.c-ONE        { background:#ede8e0; color:#3d2e1e; }
+.c-HapagLloyd { background:#edeae3; color:#3d2e1e; }
+.c-YangMing   { background:#ede8e4; color:#3d2e1e; }
+.c-PIL        { background:#e8e8e4; color:#3d2e1e; }
+.c-WanHai     { background:#e4e8ed; color:#3d2e1e; }
+.c-OOCL       { background:#e8e4dc; color:#3d2e1e; }
+.c-COSCO      { background:#ede8e0; color:#3d2e1e; }
+.c-ZIM        { background:#edeae3; color:#3d2e1e; }
+.c-other      { background:#e8e8e4; color:#3d2e1e; }
+.c-IAL        { background:#e4eae8; color:#3d2e1e; }
+.c-SITC       { background:#e8e4ed; color:#3d2e1e; }
+.c-HMM        { background:#ede4e4; color:#3d2e1e; }
+.c-TSL        { background:#e4ede4; color:#3d2e1e; }
+.c-KMTC       { background:#ede8dc; color:#3d2e1e; }
+
+/* ===== Carrier Grid ===== */
+.carrier-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
+  gap: 7px;
+  margin-top: 4px;
+}
+.carrier-card {
+  border: 1px solid var(--border);
+  border-radius: 9px;
+  padding: 12px 8px;
+  text-align: center;
+  cursor: pointer;
+  transition: all 0.15s;
+  background: #fff;
+}
+.carrier-card:hover {
+  border-color: var(--accent);
+  background: var(--accent-lt);
+  transform: translateY(-1px);
+}
+.carrier-card .icon { font-size: 22px; margin-bottom: 5px; }
+.carrier-card .name { font-weight: 700; font-size: 12px; color: var(--text); }
+.carrier-card .domain { font-size: 10px; color: var(--text-lt); margin-top: 2px; }
+.carrier-card .clipboard-badge {
+  display: inline-block;
+  margin-top: 5px;
+  font-size: 10px;
+  font-weight: 600;
+  color: #7a5c30;
+  background: #f0e4cc;
+  border: 1px solid #d4bc8e;
+  border-radius: 4px;
+  padding: 1px 6px;
+}
+.carrier-card .disabled-badge {
+  display: inline-block;
+  margin-top: 5px;
+  font-size: 10px;
+  font-weight: 600;
+  color: var(--text-lt);
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  padding: 1px 6px;
+}
+.carrier-card.tracking-disabled { opacity: 0.45; cursor: not-allowed; }
+.carrier-card.tracking-disabled:hover {
+  transform: none;
+  background: #fff;
+  border-color: var(--border);
+}
+#clipboard-toast {
+  position: fixed;
+  bottom: 28px;
+  left: 50%;
+  transform: translateX(-50%) translateY(20px);
+  background: var(--accent-dk);
+  color: #f5ede0;
+  padding: 10px 20px;
+  border-radius: 9px;
+  font-size: 13px;
+  font-weight: 600;
+  opacity: 0;
+  transition: opacity 0.25s, transform 0.25s;
+  pointer-events: none;
+  z-index: 9999;
+  white-space: nowrap;
+}
+#clipboard-toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+.carrier-card .verified-badge {
+  display: inline-block;
+  margin-top: 5px;
+  font-size: 10px;
+  font-weight: 600;
+  color: #3a5c36;
+  background: #dcebd8;
+  border: 1px solid #a8c8a0;
+  border-radius: 4px;
+  padding: 1px 6px;
+}
+
+/* ===== Portal Grid ===== */
+.portal-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 10px;
+}
+.portal-card {
+  border: 1px solid var(--border);
+  border-radius: 9px;
+  padding: 14px;
+  background: #fff;
+  transition: all 0.15s;
+}
+.portal-card:hover { border-color: var(--accent); background: var(--accent-lt); }
+.portal-card .portal-name { font-weight: 700; font-size: 13px; color: var(--text); margin-bottom: 4px; }
+.portal-card .portal-desc { font-size: 11px; color: var(--text-md); margin-bottom: 10px; }
+
+/* ===== BL/DO 手続きタイプ切替 ===== */
+.proc-type-btn {
+  padding: 7px 16px;
+  border: 1.5px solid var(--border);
+  border-radius: 7px;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  background: #fff;
+  color: var(--text-md);
+  transition: all 0.15s;
+}
+.proc-type-btn:hover { border-color: var(--accent); color: var(--accent); }
+.proc-type-btn.active { border-color: var(--accent); background: var(--accent-lt); color: var(--accent-dk); }
+
+/* ===== Guidance Card ===== */
+.guidance-card {
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: 9px;
+  padding: 16px 18px;
+  margin-top: 14px;
+}
+.guidance-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 12px;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+.guidance-title { font-weight: 700; font-size: 14px; color: var(--text); }
+.guidance-steps { list-style: none; counter-reset: step-counter; }
+.guidance-steps li {
+  counter-increment: step-counter;
+  position: relative;
+  padding: 7px 0 7px 34px;
+  font-size: 13px;
+  color: var(--text-md);
+  border-bottom: 1px solid var(--border);
+}
+.guidance-steps li:last-child { border-bottom: none; }
+.guidance-steps li::before {
+  content: counter(step-counter);
+  position: absolute;
+  left: 0;
+  top: 7px;
+  width: 22px;
+  height: 22px;
+  background: var(--accent);
+  color: #f5ede0;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 11px;
+  font-weight: 700;
+}
+
+.badge-ok {
+  display: inline-flex; align-items: center; gap: 4px;
+  background: #dcebd8; color: #3a5c36; border: 1px solid #a8c8a0;
+  padding: 3px 9px; border-radius: 5px; font-size: 11px; font-weight: 600;
+}
+.badge-na {
+  display: inline-flex; align-items: center; gap: 4px;
+  background: #f0e4cc; color: #7a5c30; border: 1px solid #d4bc8e;
+  padding: 3px 9px; border-radius: 5px; font-size: 11px; font-weight: 600;
+}
+
+/* ===== BL記載事項グリッド ===== */
+.blrules-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+  gap: 7px;
+}
+.blrules-card {
+  border: 1px solid var(--border);
+  border-radius: 7px;
+  padding: 11px 13px;
+  background: #fff;
+}
+.blrules-carrier { font-weight: 700; font-size: 12px; color: var(--text); margin-bottom: 5px; }
+.blrules-link { color: var(--accent); font-size: 11px; font-weight: 600; text-decoration: none; }
+.blrules-link:hover { text-decoration: underline; }
+.blrules-na { color: var(--text-lt); font-size: 11px; }
+
+/* ===== WIP Badge ===== */
+.wip-badge {
+  display: inline-block;
+  margin-left: 8px;
+  padding: 2px 7px;
+  background: #f0e4cc;
+  color: #7a5c30;
+  border: 1px solid #d4bc8e;
+  border-radius: 4px;
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0;
+  text-transform: none;
+  vertical-align: middle;
+}
+
+/* ===== Footer ===== */
+.footer {
+  margin-top: 22px;
+  padding: 16px 20px;
+  background: var(--card-bg);
+  border-radius: 10px;
+  border: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+.footer-text { font-size: 12px; color: var(--text-md); }
+.footer-link {
+  display: inline-flex; align-items: center; gap: 5px;
+  background: var(--accent-dk);
+  color: #f5ede0;
+  text-decoration: none;
+  padding: 6px 14px; border-radius: 7px;
+  font-size: 12px; font-weight: 700; transition: opacity 0.2s;
+}
+.footer-link:hover { opacity: 0.82; }
+
+/* ===== Responsive ===== */
+@media (max-width: 600px) {
+  .lookup-form { flex-direction: column; }
+  .lookup-form input, .lookup-form select { width: 100%; }
+  .tab-btn { font-size: 11px; padding: 7px 5px; min-width: 80px; }
+}
+
+/* ===== 計算ツール ===== */
+.calc-desc { font-size: 12px; color: var(--text-md); margin-bottom: 14px; line-height: 1.7; }
+.calc-field { display: flex; flex-direction: column; gap: 4px; }
+.calc-label { font-size: 11px; color: var(--text-md); font-weight: 600; white-space: nowrap; }
+.calc-input {
+  width: 90px; padding: 9px 12px;
+  border: 1px solid var(--border); border-radius: 7px;
+  font-size: 13px; background: #fff; color: var(--text);
+  outline: none; transition: border-color 0.2s;
+}
+.calc-input:focus { border-color: var(--accent); }
+.calc-result {
+  margin-top: 14px; padding: 15px;
+  background: var(--accent-lt); border: 1px solid var(--border-md); border-radius: 9px;
+}
+.calc-row { display: flex; flex-wrap: wrap; gap: 12px; }
+.calc-item { flex: 1; min-width: 160px; }
+.calc-item.hl {
+  background: #fff; border-radius: 8px; padding: 10px 14px;
+  border: 1px solid var(--border);
+}
+.calc-item-label { font-size: 11px; color: var(--text-md); font-weight: 600; margin-bottom: 4px; }
+.calc-item-value { font-size: 16px; font-weight: 700; color: var(--accent); }
+.calc-note { font-size: 11px; color: var(--text-lt); font-weight: 400; }
+
+.calc-history-entry { border-bottom: 1px solid var(--border); padding-bottom: 12px; margin-bottom: 12px; }
+.calc-history-entry:last-child { border-bottom: none; margin-bottom: 0; padding-bottom: 0; }
+.calc-history-header { display: flex; align-items: center; gap: 8px; margin-bottom: 8px; }
+.calc-history-num { font-size: 11px; font-weight: 700; color: var(--accent); background: var(--accent-lt); padding: 2px 7px; border-radius: 10px; white-space: nowrap; }
+.calc-history-summary { font-size: 11px; color: var(--text-md); flex: 1; }
+.calc-history-close { background: none; border: none; color: var(--text-lt); cursor: pointer; font-size: 16px; padding: 0 4px; line-height: 1; }
+.calc-history-close:hover { color: #b04040; }
+.btn-clear { background: var(--card-bg); color: var(--text-md); border: 1px solid var(--border); padding: 9px 13px; border-radius: 7px; font-size: 13px; font-weight: 600; cursor: pointer; white-space: nowrap; transition: all 0.2s; }
+.btn-clear:hover { background: #f0dada; color: #8c3a3a; border-color: #c8a0a0; }
+
+/* ===== フィードバックフッター ===== */
+.feedback-footer {
+  margin-top: 22px;
+  padding: 14px 18px;
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+}
+.feedback-footer-title {
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--text-lt);
+  letter-spacing: 0.05em;
+  margin-bottom: 8px;
+}
+.feedback-textarea {
+  width: 100%;
+  min-height: 68px;
+  padding: 9px 12px;
+  border: 1px solid var(--border);
+  border-radius: 7px;
+  font-size: 13px;
+  font-family: inherit;
+  resize: vertical;
+  box-sizing: border-box;
+  background: #fff;
+  color: var(--text);
+  transition: border-color .2s;
+}
+.feedback-textarea:focus { outline: none; border-color: var(--accent); }
+.feedback-actions { display: flex; align-items: center; gap: 12px; margin-top: 8px; }
+.feedback-status { font-size: 12px; color: #5a8a52; }
+
+
+/* ===== 航路記事カード ===== */
+.route-card {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  text-decoration: none;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  padding: 8px 12px;
+  background: #fff;
+  transition: all 0.15s;
+  color: inherit;
+}
+.route-card:hover {
+  border-color: var(--accent);
+  background: var(--accent-lt);
+}
+.route-card-title {
+  font-weight: 600;
+  font-size: 13px;
+  color: var(--text);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  flex: 1;
+}
+.route-card-desc {
+  display: none;
+}
+.route-card-meta {
+  font-size: 11px;
+  color: var(--text-lt);
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+
+/* ===== インコタームズタブ ===== */
+.inco-group-label {
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--text-md);
+  margin: 12px 0 8px;
+  text-transform: uppercase;
+  letter-spacing: 0.7px;
+}
+.inco-stage-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 7px;
+  margin-bottom: 6px;
+}
+.inco-stage-btn {
+  padding: 8px 14px;
+  border: 1.5px solid var(--border-md);
+  border-radius: 8px;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--text-md);
+  background: #fff;
+  cursor: pointer;
+  transition: all 0.15s;
+  user-select: none;
+}
+.inco-stage-btn:hover { border-color: var(--accent); background: var(--accent-lt); }
+.inco-stage-btn.selected {
+  background: var(--accent);
+  color: #f5ede0;
+  border-color: var(--accent);
+}
+.inco-results-wrap {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: 14px;
+}
+.inco-result-card {
+  background: var(--card-bg);
+  border: 2px solid var(--accent);
+  border-radius: 10px;
+  padding: 12px 16px;
+  min-width: 130px;
+  text-align: center;
+}
+.inco-result-card.no-match {
+  border-color: var(--border-md);
+  background: var(--bg);
+}
+.inco-result-code {
+  font-size: 22px;
+  font-weight: 800;
+  color: var(--accent-dk);
+}
+.inco-result-name {
+  font-size: 10px;
+  color: var(--text-md);
+  margin-top: 3px;
+  line-height: 1.4;
+}
+.inco-result-note {
+  font-size: 10px;
+  color: var(--text-lt);
+  margin-top: 5px;
+  line-height: 1.4;
+}
+.inco-mode-tag {
+  display: inline-block;
+  font-size: 9px;
+  font-weight: 700;
+  padding: 1px 6px;
+  border-radius: 3px;
+  margin-top: 5px;
+}
+.inco-mode-tag.sea  { background: #dbeafe; color: #1e40af; }
+.inco-mode-tag.all  { background: #dcfce7; color: #166534; }
+/* 一覧表 */
+.inco-table-wrap { overflow-x: auto; margin-top: 6px; }
+.inco-table {
+  border-collapse: collapse;
+  min-width: 680px;
+  width: 100%;
+  font-size: 11px;
+}
+.inco-table th {
+  background: var(--accent-lt);
+  color: var(--accent-dk);
+  padding: 7px 6px;
+  border: 1px solid var(--border);
+  font-weight: 700;
+  text-align: center;
+  white-space: nowrap;
+  vertical-align: bottom;
+  line-height: 1.3;
+}
+.inco-table th.stage-group-ex { background: #e8f4f0; color: #1a5c45; }
+.inco-table th.stage-group-im { background: #fef3e8; color: #7c3a0e; }
+.inco-table td {
+  padding: 6px 5px;
+  border: 1px solid var(--border);
+  text-align: center;
+  font-size: 11px;
+}
+.inco-table td.code-cell {
+  font-weight: 800;
+  font-size: 13px;
+  color: var(--accent-dk);
+  text-align: left;
+  padding-left: 10px;
+  white-space: nowrap;
+}
+.inco-table td.name-cell {
+  font-size: 10px;
+  color: var(--text-md);
+  text-align: left;
+  white-space: nowrap;
+}
+.inco-table td.seller { background: #bbf7d0; color: #14532d; font-weight: 700; }
+.inco-table td.buyer  { background: var(--bg); color: var(--text-lt); }
+.inco-table td.mode-cell {
+  font-size: 9px;
+  font-weight: 700;
+  white-space: nowrap;
+}
+.inco-table tr:hover td { filter: brightness(0.97); }
+
+
+/* ===== カテゴリーナビ（2段タブ上段） ===== */
+.cat-nav {
+  display: flex;
+  gap: 5px;
+  margin-bottom: 6px;
+  flex-wrap: wrap;
+}
+.cat-btn {
+  flex: 1;
+  min-width: 90px;
+  padding: 10px 8px;
+  border: 1px solid var(--border-md);
+  background: var(--card-bg);
+  border-radius: 8px;
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--text-md);
+  cursor: pointer;
+  transition: all 0.15s;
+  text-align: center;
+  white-space: nowrap;
+}
+.cat-btn:hover { background: var(--accent-lt); color: var(--accent-dk); border-color: var(--accent); }
+.cat-btn.active {
+  background: var(--accent-dk);
+  color: #f5ede0;
+  border-color: var(--accent-dk);
+}
+/* サブタブナビ（2段タブ下段）*/
+.sub-nav { display: none !important; margin-bottom: 14px; }
+.sub-nav.active { display: flex !important; }
+
+  </style>
+</head>
+<body>
+<div id="clipboard-toast">📋 番号をコピーしました。貼り付けて検索してください。</div>
+<div class="app">
+
+  <!-- ===================== BANNER =====================
+       差し替え手順: 下の <img> タグの src を画像パスまたはURLに変更するだけです。
+       プレースホルダー期間中はグラデーションヘッダーが表示されます。
+  ====================================================== -->
+  <!-- BANNER START -->
+  <!-- <img src="banner.png" alt="フォワーダー実務ポータル" style="width:100%;border-radius:14px;margin-bottom:18px;display:block;"> -->
+  <!-- BANNER END -->
+
+  <!-- Header（バナー差し替え後はこのブロックを削除またはコメントアウト） -->
+  <div class="header" style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px;">
+    <div>
+      <h1>🛠️ 実務支援</h1>
+      <div class="subtitle">ブックマーク・知識・計算機をひとまとめに &nbsp;｜&nbsp; 最終更新: <span id="last-updated">-</span></div>
+    </div>
+    <a href="index.html"
+       style="display:inline-flex;align-items:center;gap:5px;background:rgba(255,255,255,0.15);color:#f5ede0;text-decoration:none;padding:7px 14px;border-radius:8px;font-size:12px;font-weight:700;white-space:nowrap;border:1px solid rgba(255,255,255,0.25);flex-shrink:0;"
+       onmouseover="this.style.background='rgba(255,255,255,0.28)'"
+       onmouseout="this.style.background='rgba(255,255,255,0.15)'">← コンテナの片隅で</a>
+  </div>
+
+  <!-- Tab Navigation -->
+  <!-- ===== カテゴリーナビ（上段） ===== -->
+  <div class="cat-nav">
+    <button class="cat-btn active" onclick="switchCategory('calc',   this)">🧮 計算</button>
+    <button class="cat-btn"        onclick="switchCategory('vessel', this)">🚢 本船・航路</button>
+    <button class="cat-btn"        onclick="switchCategory('cost',   this)">💴 料金・費用</button>
+    <button class="cat-btn"        onclick="switchCategory('docs',   this)">📄 書類・通関</button>
+    <button class="cat-btn"        onclick="switchCategory('ref',    this)">📚 知識・参考</button>
+
+    <button class="cat-btn"        onclick="switchCategory('booking', this)">📋 Booking/SI</button>
+  </div>
+
+  <!-- ===== サブタブナビ（下段・カテゴリー別） ===== -->
+  <div class="tab-nav sub-nav active" id="sub-calc">
+    <button class="tab-btn active" onclick="switchTab('calc',   this)">📐 計算（サイズ）</button>
+    <button class="tab-btn"        onclick="switchTab('rate',   this)">💰 計算（お金）</button>
+  </div>
+  <div class="tab-nav sub-nav" id="sub-vessel">
+    <button class="tab-btn" onclick="switchTab('tracking', this)">🔍 トラッキング</button>
+    <button class="tab-btn" onclick="switchTab('vessel',   this)">🚢 スケジュール</button>
+    <button class="tab-btn" onclick="switchTab('cycut',    this)">📅 CY OPEN/CUT</button>
+    <button class="tab-btn" onclick="switchTab('route',    this)">🗺️ サービス航路</button>
+  </div>
+  <div class="tab-nav sub-nav" id="sub-cost">
+    <button class="tab-btn" onclick="switchTab('surcharge', this)">💴 サーチャージ 🚧</button>
+    <button class="tab-btn" onclick="switchTab('freetime',  this)">⏱️ フリータイム 🚧</button>
+  </div>
+  <div class="tab-nav sub-nav" id="sub-docs">
+    <button class="tab-btn" onclick="switchTab('bldo',    this)">📄 書類</button>
+    <button class="tab-btn" onclick="switchTab('blrules', this)">📋 BL記載事項 🚧</button>
+    <button class="tab-btn" onclick="switchTab('regs',    this)">🔒 貿易管理令・他法令</button>
+  </div>
+  <div class="tab-nav sub-nav" id="sub-ref">
+    <button class="tab-btn" onclick="switchTab('incoterms',  this)">📦 インコタームズ</button>
+    <button class="tab-btn" onclick="switchTab('sizes',      this)">📏 種類・サイズ</button>
+    <button class="tab-btn" onclick="switchTab('insurance',  this)">🛡️ 海上貨物保険</button>
+    <button class="tab-btn" onclick="switchTab('blclause',   this)">📜 BL約款</button>
+  </div>
+  <div class="tab-nav sub-nav" id="sub-booking">
+    <button class="tab-btn" onclick="switchTab('booking-tab', this)">🛳️ Booking</button>
+    <button class="tab-btn" onclick="switchTab('si', this)">📝 S/I</button>
+    <button class="tab-btn" onclick="switchTab('filing', this)">📡 ファイリングルール</button>
+  </div>
+
+  <!-- ===================== Tab 1: コンテナ追跡 ===================== -->
+  <div class="tab-content" id="tab-tracking">
+
+    <div class="card">
+      <div class="section-title">🔍 クイック追跡</div>
+      <div class="lookup-form">
+        <select id="ql-carrier"></select>
+        <input type="text" id="ql-number" placeholder="コンテナ番号 or B/L番号 (例: MSKU1234567)" />
+        <button class="btn-primary" onclick="quickLookup()">追跡する 🔍</button>
+      </div>
+      <div class="result-box" id="ql-result">
+        <span class="result-url" id="ql-url"></span>
+        <a class="btn-open" id="ql-link" href="#" target="_blank">開く ↗</a>
+      </div>
+    </div>
+
+
+    <div class="card">
+      <div class="section-title">🌐 船会社別 トラッキングページ</div>
+      <p style="font-size:12px;color:#718096;margin-bottom:12px;">番号入力後にクリックするとその船会社のトラッキングページへ直接ジャンプ。番号なしの場合はトップページへ。</p>
+      <div class="carrier-grid" id="carrier-grid"></div>
+    </div>
+
+
+  <div class="feedback-footer">
+    <div class="feedback-footer-title">💬 このタブへのフィードバック・改善要望</div>
+    <textarea class="feedback-textarea" id="fb-tracking" placeholder="ご意見・改善要望・追加してほしい機能などをお書きください"></textarea>
+    <div class="feedback-actions">
+      <button class="btn-primary" style="padding:8px 18px;font-size:13px;" onclick="sendFeedback('コンテナ追跡', 'fb-tracking')">送信</button>
+      <span class="feedback-status" id="fb-tracking-status"></span>
+    </div>
+  </div>
+  </div><!-- /tab-tracking -->
+
+  <!-- ===================== Tab 2: 本船動静 ===================== -->
+  <div class="tab-content" id="tab-vessel">
+
+    <div class="card">
+      <div class="section-title">🌐 国内動静ポータル</div>
+      <p style="font-size:12px;color:#718096;margin-bottom:14px;">国内の本船入出港・動静を調べられる外部ポータルです。</p>
+      <div id="vessel-portal-grid" style="display:flex;flex-wrap:wrap;gap:12px;"></div>
+    </div>
+
+    <div class="card">
+      <div class="section-title">🚢 Search by Vessel — 船会社別ページへジャンプ</div>
+      <p style="font-size:12px;color:#718096;margin-bottom:14px;">船会社のボタンをクリックすると、各社の本船スケジュール検索ページへ直接移動します。</p>
+      <div class="carrier-grid" id="vessel-grid"></div>
+    </div>
+
+
+  <div class="feedback-footer">
+    <div class="feedback-footer-title">💬 このタブへのフィードバック・改善要望</div>
+    <textarea class="feedback-textarea" id="fb-vessel" placeholder="ご意見・改善要望・追加してほしい機能などをお書きください"></textarea>
+    <div class="feedback-actions">
+      <button class="btn-primary" style="padding:8px 18px;font-size:13px;" onclick="sendFeedback('本船動静', 'fb-vessel')">送信</button>
+      <span class="feedback-status" id="fb-vessel-status"></span>
+    </div>
+  </div>
+  </div><!-- /tab-vessel -->
+
+  <!-- ===================== CY OPEN/CUT tab ===================== -->
+  <div class="tab-content" id="tab-cycut">
+
+    <div class="card">
+      <div class="section-title">📅 CY OPEN / CUT — 船会社別ページへジャンプ</div>
+      <p style="font-size:12px;color:#718096;margin-bottom:14px;">各船会社のCY OPEN・CUTカットオフ情報ページへジャンプします。グレーの船会社は情報未登録またはご確認ください。</p>
+      <div class="carrier-grid" id="cycut-grid"></div>
+    </div>
+
+  <div class="feedback-footer">
+    <div class="feedback-footer-title">💬 このタブへのフィードバック・改善要望</div>
+    <textarea class="feedback-textarea" id="fb-cycut" placeholder="ご意見・改善要望・追加してほしい機能などをお書きください"></textarea>
+    <div class="feedback-actions">
+      <button class="btn-primary" style="padding:8px 18px;font-size:13px;" onclick="sendFeedback('CY OPEN/CUT', 'fb-cycut')">送信</button>
+      <span class="feedback-status" id="fb-cycut-status"></span>
+    </div>
+  </div>
+  </div><!-- /tab-cycut -->
+
+  <!-- ===================== サービス航路 tab ===================== -->
+  <div class="tab-content" id="tab-route">
+
+    <div class="card">
+      <div class="section-title">🚢 船会社別 サービス航路ページ</div>
+      <p style="font-size:12px;color:var(--text-md);margin-bottom:14px;">各船会社のサービス航路一覧ページへジャンプします。</p>
+      <div class="carrier-grid" id="route-carrier-grid"></div>
+    </div>
+
+    <div class="card">
+      <div class="section-title">🗺️ 航路記事一覧</div>
+      <p style="font-size:12px;color:var(--text-md);margin-bottom:14px;">「コンテナの片隅」の航路記事です。クリックすると記事ページへ移動します。</p>
+      <div id="route-articles" style="display:flex;flex-direction:column;gap:10px;">
+        <div style="color:var(--text-lt);font-size:13px;padding:12px 0;">読み込み中...</div>
+      </div>
+    </div>
+
+  <div class="feedback-footer">
+    <div class="feedback-footer-title">💬 このタブへのフィードバック・改善要望</div>
+    <textarea class="feedback-textarea" id="fb-route" placeholder="ご意見・改善要望・追加してほしい機能などをお書きください"></textarea>
+    <div class="feedback-actions">
+      <button class="btn-primary" style="padding:8px 18px;font-size:13px;" onclick="sendFeedback('サービス航路', 'fb-route')">送信</button>
+      <span class="feedback-status" id="fb-route-status"></span>
+    </div>
+  </div>
+  </div><!-- /tab-route -->
+
+  <!-- ===================== サーチャージ tab ===================== -->
+  <div class="tab-content" id="tab-surcharge">
+
+    <div class="card">
+      <div class="section-title">📥 輸入サーチャージ <span class="wip-badge">🚧 URL未登録</span></div>
+      <p style="font-size:12px;color:#718096;margin-bottom:14px;">各船会社の輸入サーチャージ案内ページへジャンプします。</p>
+      <div class="carrier-grid" id="surcharge-import-grid"></div>
+    </div>
+
+    <div class="card">
+      <div class="section-title">📤 輸出サーチャージ <span class="wip-badge">🚧 URL未登録</span></div>
+      <p style="font-size:12px;color:#718096;margin-bottom:14px;">各船会社の輸出サーチャージ案内ページへジャンプします。</p>
+      <div class="carrier-grid" id="surcharge-export-grid"></div>
+    </div>
+
+    <div class="card">
+      <div class="section-title">📋 その他サーチャージ <span class="wip-badge">🚧 URL未登録</span></div>
+      <p style="font-size:12px;color:#718096;margin-bottom:14px;">PSS・GRI・EIS等の各種サーチャージ案内ページへジャンプします。</p>
+      <div class="carrier-grid" id="surcharge-other-grid"></div>
+    </div>
+
+  <div class="feedback-footer">
+    <div class="feedback-footer-title">💬 このタブへのフィードバック・改善要望</div>
+    <textarea class="feedback-textarea" id="fb-surcharge" placeholder="ご意見・改善要望・追加してほしい機能などをお書きください"></textarea>
+    <div class="feedback-actions">
+      <button class="btn-primary" style="padding:8px 18px;font-size:13px;" onclick="sendFeedback('サーチャージ', 'fb-surcharge')">送信</button>
+      <span class="feedback-status" id="fb-surcharge-status"></span>
+    </div>
+  </div>
+  </div><!-- /tab-surcharge -->
+
+  <!-- ===================== Tab 4: 書類 ===================== -->
+  <div class="tab-content" id="tab-bldo">
+
+    <div class="card">
+      <div class="section-title">📥 輸入申請 <span class="wip-badge">🚧 一部登録済み</span></div>
+      <p style="font-size:12px;color:#718096;margin-bottom:14px;">DO発行依頼など、輸入に関する申請フォームへジャンプします。</p>
+      <div class="carrier-grid" id="bldo-import-grid"></div>
+    </div>
+
+    <div class="card">
+      <div class="section-title">📤 輸出申請 <span class="wip-badge">🚧 一部登録済み</span></div>
+      <p style="font-size:12px;color:#718096;margin-bottom:14px;">BL発行依頼など、輸出に関する申請フォームへジャンプします。</p>
+      <div class="carrier-grid" id="bldo-export-grid"></div>
+    </div>
+
+  <div class="feedback-footer">
+    <div class="feedback-footer-title">💬 このタブへのフィードバック・改善要望</div>
+    <textarea class="feedback-textarea" id="fb-bldo" placeholder="ご意見・改善要望・追加してほしい機能などをお書きください"></textarea>
+    <div class="feedback-actions">
+      <button class="btn-primary" style="padding:8px 18px;font-size:13px;" onclick="sendFeedback('書類', 'fb-bldo')">送信</button>
+      <span class="feedback-status" id="fb-bldo-status"></span>
+    </div>
+  </div>
+  </div><!-- /tab-bldo -->
+
+  <!-- ===================== Tab 5: BL 記載事項 ===================== -->
+  <div class="tab-content" id="tab-blrules">
+
+    <div class="card">
+      <div class="section-title">📋 BL記載事項（国・地域別規則）<span class="wip-badge">🚧 URL未登録</span></div>
+      <p style="font-size:12px;color:#718096;margin-bottom:12px;">
+        国・地域ごとのBL記載規則。各船会社の案内ページが登録されると「案内ページ ↗」リンクが表示されます。
+      </p>
+      <div class="blrules-grid" id="blrules-grid"></div>
+    </div>
+
+
+  <div class="feedback-footer">
+    <div class="feedback-footer-title">💬 このタブへのフィードバック・改善要望</div>
+    <textarea class="feedback-textarea" id="fb-blrules" placeholder="ご意見・改善要望・追加してほしい機能などをお書きください"></textarea>
+    <div class="feedback-actions">
+      <button class="btn-primary" style="padding:8px 18px;font-size:13px;" onclick="sendFeedback('BL記載事項', 'fb-blrules')">送信</button>
+      <span class="feedback-status" id="fb-blrules-status"></span>
+    </div>
+  </div>
+  </div><!-- /tab-blrules -->
+
+  <!-- ===================== Tab 6: フリータイム ===================== -->
+  <div class="tab-content" id="tab-freetime">
+
+    <div class="card">
+      <div class="section-title">⏱️ フリータイム検索<span class="wip-badge">🚧 URL未登録</span></div>
+      <p style="font-size:12px;color:#718096;margin-bottom:12px;">船会社・コンテナ番号を入力してフリータイム情報を検索します。</p>
+      <div class="lookup-form">
+        <select id="ft-carrier"></select>
+        <input type="text" id="ft-number" placeholder="コンテナ番号 (例: MSKU1234567)" />
+        <button class="btn-primary" onclick="freetimeLookup()">検索 🔍</button>
+      </div>
+      <div class="result-box" id="ft-result">
+        <span class="result-url" id="ft-url"></span>
+        <a class="btn-open" id="ft-link" href="#" target="_blank">開く ↗</a>
+      </div>
+    </div>
+
+
+  <div class="feedback-footer">
+    <div class="feedback-footer-title">💬 このタブへのフィードバック・改善要望</div>
+    <textarea class="feedback-textarea" id="fb-freetime" placeholder="ご意見・改善要望・追加してほしい機能などをお書きください"></textarea>
+    <div class="feedback-actions">
+      <button class="btn-primary" style="padding:8px 18px;font-size:13px;" onclick="sendFeedback('フリータイム', 'fb-freetime')">送信</button>
+      <span class="feedback-status" id="fb-freetime-status"></span>
+    </div>
+  </div>
+  </div><!-- /tab-freetime -->
+
+  <!-- ===================== Tab: インコタームズ ===================== -->
+  <div class="tab-content" id="tab-incoterms">
+
+    <!-- 判定ツール -->
+    <div class="card">
+      <div class="section-title">🔍 インコタームズ判定ツール</div>
+      <p style="font-size:12px;color:#718096;margin-bottom:4px;">
+        <strong>自分（売り手）が担当する作業</strong>を選択して「判定する」を押してください。
+      </p>
+
+      <div class="inco-group-label">📤 輸出側の作業</div>
+      <div class="inco-stage-grid" id="inco-stages-export"></div>
+
+      <div class="inco-group-label">📥 輸入側の作業（売り手が代行する場合）</div>
+      <div class="inco-stage-grid" id="inco-stages-import"></div>
+
+      <div style="display:flex;gap:8px;margin-top:14px;flex-wrap:wrap;">
+        <button class="btn-primary" onclick="judgeIncoterms()">判定する 🔍</button>
+        <button class="proc-type-btn" onclick="resetIncoterms()">リセット</button>
+      </div>
+      <div id="inco-result" style="margin-top:14px;"></div>
+    </div>
+
+    <!-- 作業範囲一覧表 -->
+    <div class="card">
+      <div class="section-title">📋 インコタームズ別 作業範囲一覧表</div>
+      <p style="font-size:12px;color:#718096;margin-bottom:10px;">
+        <span style="display:inline-block;background:#bbf7d0;color:#14532d;font-weight:700;padding:1px 7px;border-radius:3px;font-size:10px;">売</span>＝売り手負担　
+        <span style="display:inline-block;background:var(--bg);color:var(--text-lt);padding:1px 7px;border-radius:3px;font-size:10px;border:1px solid var(--border);">買</span>＝買い手負担
+      </p>
+      <div class="inco-table-wrap">
+        <table class="inco-table" id="inco-table"></table>
+      </div>
+    </div>
+
+
+    <!-- 申告価格解説 -->
+    <div class="card">
+      <div class="section-title">💴 輸出入通関における申告価格</div>
+      <p style="font-size:12px;color:#718096;margin-bottom:14px;">
+        売買契約のインコタームズに関わらず、通関申告に使う価格は税関のルールで決まっています。
+      </p>
+
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:16px;">
+
+        <!-- 輸出 -->
+        <div style="background:#e8f4f0;border-radius:9px;padding:14px 16px;border:1px solid #b2dfdb;">
+          <div style="font-size:12px;font-weight:800;color:#1a5c45;margin-bottom:8px;">📤 輸出通関の申告価格</div>
+          <div style="font-size:22px;font-weight:900;color:#1a5c45;text-align:center;margin:10px 0;">FOB価格</div>
+          <p style="font-size:11px;color:#2d6a4f;line-height:1.6;margin:0;">
+            売買条件がCIFやCFRであっても、輸出申告書には<strong>FOB価格（本船積込渡し価格）</strong>で申告します。<br>
+            運賃・保険料が含まれている場合は差し引いてFOBに換算します。
+          </p>
+        </div>
+
+        <!-- 輸入 -->
+        <div style="background:#fef3e8;border-radius:9px;padding:14px 16px;border:1px solid #f9c784;">
+          <div style="font-size:12px;font-weight:800;color:#7c3a0e;margin-bottom:8px;">📥 輸入通関の申告価格</div>
+          <div style="font-size:22px;font-weight:900;color:#7c3a0e;text-align:center;margin:10px 0;">CIF価格</div>
+          <p style="font-size:11px;color:#92400e;line-height:1.6;margin:0;">
+            売買条件がFOBやEXWであっても、課税標準は<strong>CIF価格（運賃・保険料込み価格）</strong>です。<br>
+            運賃・保険料が含まれていない場合は加算してCIFに換算します。
+          </p>
+        </div>
+
+      </div>
+
+      <!-- 換算早見表 -->
+      <div style="font-size:11px;font-weight:700;color:var(--text-md);margin-bottom:8px;letter-spacing:0.5px;">📐 よく使う換算パターン</div>
+      <div style="overflow-x:auto;">
+        <table style="border-collapse:collapse;width:100%;min-width:480px;font-size:11px;">
+          <thead>
+            <tr style="background:var(--accent-lt);">
+              <th style="padding:7px 10px;border:1px solid var(--border);text-align:left;color:var(--accent-dk);">売買条件</th>
+              <th style="padding:7px 10px;border:1px solid var(--border);text-align:center;color:#1a5c45;">輸出申告（FOB換算）</th>
+              <th style="padding:7px 10px;border:1px solid var(--border);text-align:center;color:#7c3a0e;">輸入申告（CIF換算）</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td style="padding:7px 10px;border:1px solid var(--border);font-weight:700;">EXW</td>
+              <td style="padding:7px 10px;border:1px solid var(--border);text-align:center;background:#e8f4f0;">EXW価格＋国内輸送費＋輸出通関費 → FOB</td>
+              <td style="padding:7px 10px;border:1px solid var(--border);text-align:center;background:#fef3e8;">FOB＋海上運賃＋保険料 → CIF</td>
+            </tr>
+            <tr style="background:#fafaf8;">
+              <td style="padding:7px 10px;border:1px solid var(--border);font-weight:700;">FOB</td>
+              <td style="padding:7px 10px;border:1px solid var(--border);text-align:center;background:#e8f4f0;">そのままFOB価格で申告</td>
+              <td style="padding:7px 10px;border:1px solid var(--border);text-align:center;background:#fef3e8;">FOB＋海上運賃＋保険料 → CIF</td>
+            </tr>
+            <tr>
+              <td style="padding:7px 10px;border:1px solid var(--border);font-weight:700;">CFR / CPT</td>
+              <td style="padding:7px 10px;border:1px solid var(--border);text-align:center;background:#e8f4f0;">CFR価格－海上運賃 → FOB</td>
+              <td style="padding:7px 10px;border:1px solid var(--border);text-align:center;background:#fef3e8;">CFR＋保険料 → CIF</td>
+            </tr>
+            <tr style="background:#fafaf8;">
+              <td style="padding:7px 10px;border:1px solid var(--border);font-weight:700;">CIF / CIP</td>
+              <td style="padding:7px 10px;border:1px solid var(--border);text-align:center;background:#e8f4f0;">CIF価格－海上運賃－保険料 → FOB</td>
+              <td style="padding:7px 10px;border:1px solid var(--border);text-align:center;background:#fef3e8;">そのままCIF価格で申告</td>
+            </tr>
+            <tr>
+              <td style="padding:7px 10px;border:1px solid var(--border);font-weight:700;">DAP / DPU / DDP</td>
+              <td style="padding:7px 10px;border:1px solid var(--border);text-align:center;background:#e8f4f0;">売買価格から運賃・保険等を差し引きFOB換算</td>
+              <td style="padding:7px 10px;border:1px solid var(--border);text-align:center;background:#fef3e8;">輸入港到着時のCIF相当額を使用</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div style="margin-top:12px;padding:10px 14px;background:#fffbeb;border-radius:7px;border:1px solid #fcd34d;">
+        <span style="font-size:11px;font-weight:700;color:#92400e;">⚠️ 注意点</span>
+        <p style="font-size:11px;color:#78350f;margin:4px 0 0;line-height:1.6;">
+          日本の輸入関税はCIF価格を課税標準とします（関税定率法第4条）。<br>
+          FOB建て取引で輸入する際、インボイスにFOB価格しか記載がない場合でも、
+          通関申告時に運賃・保険料を加算したCIF価格を申告する必要があります。<br>
+          運賃が不明な場合は税関が認定した方法（実費証明など）で計算します。
+        </p>
+      </div>
+    </div>
+
+  <div class="feedback-footer">
+    <div class="feedback-footer-title">💬 このタブへのフィードバック・改善要望</div>
+    <textarea class="feedback-textarea" id="fb-incoterms" placeholder="ご意見・改善要望・追加してほしい機能などをお書きください"></textarea>
+    <div class="feedback-actions">
+      <button class="btn-primary" style="padding:8px 18px;font-size:13px;" onclick="sendFeedback('インコタームズ', 'fb-incoterms')">送信</button>
+      <span class="feedback-status" id="fb-incoterms-status"></span>
+    </div>
+  </div>
+  </div><!-- /tab-incoterms -->
+  <!-- ===================== Tab: 種類・サイズ ===================== -->
+  <div class="tab-content" id="tab-sizes">
+
+    <!-- コンテナ -->
+    <div class="card">
+      <div class="section-title">📦 コンテナ 種類・サイズ</div>
+      <p style="font-size:12px;color:#718096;margin-bottom:12px;">※内寸・重量はメーカーにより若干異なる場合があります。</p>
+
+      <div style="font-size:11px;font-weight:700;color:var(--accent-dk);margin:0 0 6px;">🟫 ドライコンテナ（汎用）</div>
+      <div style="overflow-x:auto;margin-bottom:14px;">
+        <table class="inco-table" style="min-width:600px;">
+          <thead><tr>
+            <th>種類</th><th>外寸 L×W×H</th><th>内寸 L×W×H</th><th>内容積</th><th>最大積載</th><th>備考</th>
+          </tr></thead>
+          <tbody>
+            <tr><td class="code-cell">20ft</td><td>6.06×2.44×2.59m</td><td>5.90×2.35×2.39m</td><td>33.2m³</td><td>21,700kg</td><td style="font-size:10px;color:var(--text-lt);">最も一般的。スペース効率◎</td></tr>
+            <tr><td class="code-cell">40ft</td><td>12.19×2.44×2.59m</td><td>12.03×2.35×2.39m</td><td>67.6m³</td><td>26,680kg</td><td style="font-size:10px;color:var(--text-lt);">20ft×2より容積大</td></tr>
+            <tr><td class="code-cell">40ft HC</td><td>12.19×2.44×2.90m</td><td>12.03×2.35×2.70m</td><td>76.4m³</td><td>26,460kg</td><td style="font-size:10px;color:var(--text-lt);">High Cube。かさ高貨物に最適</td></tr>
+            <tr><td class="code-cell">45ft HC</td><td>13.72×2.44×2.90m</td><td>13.56×2.35×2.70m</td><td>86.1m³</td><td>27,600kg</td><td style="font-size:10px;color:var(--text-lt);">欧州・北米航路で使用多い</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div style="font-size:11px;font-weight:700;color:var(--accent-dk);margin:0 0 6px;">🧊 リーファーコンテナ（温度管理）</div>
+      <div style="overflow-x:auto;margin-bottom:14px;">
+        <table class="inco-table" style="min-width:600px;">
+          <thead><tr>
+            <th>種類</th><th>内寸 L×W×H</th><th>内容積</th><th>最大積載</th><th>温度範囲</th>
+          </tr></thead>
+          <tbody>
+            <tr><td class="code-cell">20ft Reefer</td><td>5.44×2.29×2.27m</td><td>28.4m³</td><td>約21,000kg</td><td>-30°C〜+30°C</td></tr>
+            <tr><td class="code-cell">40ft HC Reefer</td><td>11.59×2.29×2.51m</td><td>66.7m³</td><td>約26,000kg</td><td>-30°C〜+30°C</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div style="font-size:11px;font-weight:700;color:var(--accent-dk);margin:0 0 6px;">⚙️ 特殊コンテナ</div>
+      <div style="overflow-x:auto;">
+        <table class="inco-table" style="min-width:500px;">
+          <thead><tr><th>種類</th><th>構造の特徴</th><th>主な対象貨物</th></tr></thead>
+          <tbody>
+            <tr><td class="code-cell">Open Top</td><td>天井なし（タープ被覆）</td><td>石材、木材、機械類など背高貨物</td></tr>
+            <tr><td class="code-cell">Flat Rack</td><td>側壁・天井なし、フレームのみ</td><td>重機、建設機械、鋼材、車両</td></tr>
+            <tr><td class="code-cell">Platform</td><td>床面のみ（壁・天井なし）</td><td>超大型・超重量貨物</td></tr>
+            <tr><td class="code-cell">Tank</td><td>円筒タンク型</td><td>液体化学品、食品液体、ガス類</td></tr>
+            <tr><td class="code-cell">Ventilated</td><td>側面に換気口</td><td>コーヒー豆、コルクなど呼吸する貨物</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- トラック -->
+    <div class="card">
+      <div class="section-title">🚛 トラック 種類・荷室サイズ</div>
+      <p style="font-size:12px;color:#718096;margin-bottom:12px;">荷室サイズはメーカー・仕様により異なります。目安としてお使いください。</p>
+      <div style="overflow-x:auto;">
+        <table class="inco-table" style="min-width:620px;">
+          <thead><tr>
+            <th>車種</th><th>最大積載量</th><th>車両総重量</th><th>荷室サイズ目安<br>L×W×H</th><th>主な用途</th>
+          </tr></thead>
+          <tbody>
+            <tr><td class="code-cell">軽バン</td><td>〜350kg</td><td>〜1.0t</td><td>1.4×1.2×1.2m</td><td>小口荷物、宅配</td></tr>
+            <tr><td class="code-cell">小型（1.5t）</td><td>〜1.5t</td><td>〜3.5t</td><td>2.8×1.6×1.6m</td><td>一般雑貨、引越し</td></tr>
+            <tr><td class="code-cell">小型（2t）</td><td>〜2.0t</td><td>〜3.5t</td><td>3.4×1.8×1.7m</td><td>一般雑貨、パレット輸送</td></tr>
+            <tr><td class="code-cell">中型（4t）</td><td>〜4.0t</td><td>〜8.0t</td><td>4.3×2.0×1.9m</td><td>雑貨、食品、パレット</td></tr>
+            <tr><td class="code-cell">大型（10t）</td><td>〜10.0t</td><td>〜20.0t</td><td>6.2×2.3×2.4m</td><td>重量物、コンテナ貨物</td></tr>
+            <tr><td class="code-cell">トレーラー<br>（20ftコンテナ）</td><td>〜20.0t</td><td>〜36.0t</td><td>コンテナ内寸に依存</td><td>港湾〜工場・倉庫間輸送</td></tr>
+            <tr><td class="code-cell">トレーラー<br>（40ftコンテナ）</td><td>〜20.0t</td><td>〜36.0t</td><td>コンテナ内寸に依存</td><td>港湾〜工場・倉庫間輸送</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- 道路交通法の制限 -->
+    <div class="card">
+      <div class="section-title">🚦 道路交通法・車両制限令による制限値</div>
+      <p style="font-size:12px;color:#718096;margin-bottom:12px;">一般制限値を超える車両は<strong>特殊車両通行許可</strong>（国道事務所等）の取得が必要です。</p>
+
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:14px;">
+        <div style="overflow-x:auto;">
+          <div style="font-size:11px;font-weight:700;color:var(--accent-dk);margin-bottom:6px;">📏 寸法・重量の一般制限値</div>
+          <table class="inco-table" style="min-width:280px;">
+            <thead><tr><th>制限項目</th><th>一般制限値</th><th>高さ指定道路</th></tr></thead>
+            <tbody>
+              <tr><td style="text-align:left;padding:5px 8px;font-weight:600;">全長</td><td>12.0m以下</td><td>—</td></tr>
+              <tr><td style="text-align:left;padding:5px 8px;font-weight:600;">全幅</td><td>2.5m以下</td><td>—</td></tr>
+              <tr><td style="text-align:left;padding:5px 8px;font-weight:600;">全高</td><td>3.8m以下</td><td class="seller" style="background:#bbf7d0;color:#14532d;">4.1m以下</td></tr>
+              <tr><td style="text-align:left;padding:5px 8px;font-weight:600;">車両総重量</td><td>20.0t以下</td><td>—</td></tr>
+              <tr><td style="text-align:left;padding:5px 8px;font-weight:600;">軸重</td><td>10.0t以下</td><td>—</td></tr>
+              <tr><td style="text-align:left;padding:5px 8px;font-weight:600;">隣接軸重</td><td>18.0t以下</td><td>—</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <div style="overflow-x:auto;">
+          <div style="font-size:11px;font-weight:700;color:var(--accent-dk);margin-bottom:6px;">🚢 コンテナ輸送での注意点</div>
+          <table class="inco-table" style="min-width:280px;">
+            <thead><tr><th>コンテナ</th><th>全長目安</th><th>要許可</th></tr></thead>
+            <tbody>
+              <tr><td class="code-cell">20ft</td><td>約13〜14m</td><td style="color:#b91c1c;font-weight:700;">要</td></tr>
+              <tr><td class="code-cell">40ft</td><td>約15〜16m</td><td style="color:#b91c1c;font-weight:700;">要</td></tr>
+              <tr><td class="code-cell">40ft HC</td><td>約15〜16m<br>高さ4.1m超も</td><td style="color:#b91c1c;font-weight:700;">要</td></tr>
+            </tbody>
+          </table>
+          <p style="font-size:10px;color:var(--text-lt);margin-top:6px;line-height:1.5;">
+            コンテナトレーラーはほぼすべて全長12m超となるため、特殊車両通行許可が必要です。輸送会社が事前に許可を取得しているのが一般的です。
+          </p>
+        </div>
+      </div>
+
+      <div style="padding:10px 14px;background:#fffbeb;border-radius:7px;border:1px solid #fcd34d;">
+        <span style="font-size:11px;font-weight:700;color:#92400e;">⚠️ 特殊車両通行許可について</span>
+        <p style="font-size:11px;color:#78350f;margin:4px 0 0;line-height:1.6;">
+          一般制限値を超える車両は、通行する経路ごとに<strong>道路管理者（国道事務所・都道府県・市区町村）</strong>への許可申請が必要です（道路法第47条の2）。<br>
+          申請はオンライン（特車申請システム）でも可能。許可には条件（夜間通行、誘導車の配置等）が付される場合があります。
+        </p>
+      </div>
+    </div>
+
+  <div class="feedback-footer">
+    <div class="feedback-footer-title">💬 このタブへのフィードバック・改善要望</div>
+    <textarea class="feedback-textarea" id="fb-sizes" placeholder="ご意見・改善要望・追加してほしい機能などをお書きください"></textarea>
+    <div class="feedback-actions">
+      <button class="btn-primary" style="padding:8px 18px;font-size:13px;" onclick="sendFeedback('種類・サイズ', 'fb-sizes')">送信</button>
+      <span class="feedback-status" id="fb-sizes-status"></span>
+    </div>
+  </div>
+  </div><!-- /tab-sizes -->
+  <!-- ===================== Tab: 海上貨物保険 ===================== -->
+  <div class="tab-content" id="tab-insurance">
+
+    <!-- ICC条項比較 -->
+    <div class="card">
+      <div class="section-title">🛡️ 協会貨物約款（ICC）の種類と担保範囲</div>
+      <p style="font-size:12px;color:#718096;margin-bottom:12px;">
+        ICC（Institute Cargo Clauses）は海上貨物保険の国際標準約款。A・B・Cの3種があり、カバー範囲が異なります。
+      </p>
+      <div style="overflow-x:auto;">
+        <table class="inco-table" style="min-width:580px;">
+          <thead>
+            <tr>
+              <th style="text-align:left;padding-left:10px;">担保リスク</th>
+              <th style="background:#bbf7d0;color:#14532d;">ICC (A)<br>全危険担保</th>
+              <th style="background:#bfdbfe;color:#1e40af;">ICC (B)</th>
+              <th style="background:#fef9c3;color:#713f12;">ICC (C)</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr><td style="text-align:left;padding:6px 10px;font-weight:600;">火災・爆発</td>
+              <td class="seller">●</td><td class="seller">●</td><td class="seller">●</td></tr>
+            <tr style="background:#fafaf8;"><td style="text-align:left;padding:6px 10px;font-weight:600;">座礁・沈没・転覆</td>
+              <td class="seller">●</td><td class="seller">●</td><td class="seller">●</td></tr>
+            <tr><td style="text-align:left;padding:6px 10px;font-weight:600;">陸上輸送具の転覆・脱線</td>
+              <td class="seller">●</td><td class="seller">●</td><td class="seller">●</td></tr>
+            <tr style="background:#fafaf8;"><td style="text-align:left;padding:6px 10px;font-weight:600;">本船・はしけの衝突・座礁</td>
+              <td class="seller">●</td><td class="seller">●</td><td class="seller">●</td></tr>
+            <tr><td style="text-align:left;padding:6px 10px;font-weight:600;">共同海損・救助費用</td>
+              <td class="seller">●</td><td class="seller">●</td><td class="seller">●</td></tr>
+            <tr style="background:#fafaf8;"><td style="text-align:left;padding:6px 10px;font-weight:600;">地震・火山噴火・落雷</td>
+              <td class="seller">●</td><td class="seller">●</td><td class="buyer">×</td></tr>
+            <tr><td style="text-align:left;padding:6px 10px;font-weight:600;">海水・川水・湖水の浸入</td>
+              <td class="seller">●</td><td class="seller">●</td><td class="buyer">×</td></tr>
+            <tr style="background:#fafaf8;"><td style="text-align:left;padding:6px 10px;font-weight:600;">波かぶり・デッキからの流出</td>
+              <td class="seller">●</td><td class="seller">●</td><td class="buyer">×</td></tr>
+            <tr><td style="text-align:left;padding:6px 10px;font-weight:600;">荷役中の落下・海没</td>
+              <td class="seller">●</td><td class="seller">●</td><td class="buyer">×</td></tr>
+            <tr style="background:#fafaf8;"><td style="text-align:left;padding:6px 10px;font-weight:600;">盗難・抜荷・不着</td>
+              <td class="seller">●</td><td class="buyer">×</td><td class="buyer">×</td></tr>
+            <tr><td style="text-align:left;padding:6px 10px;font-weight:600;">雨水濡れ・結露</td>
+              <td class="seller">●</td><td class="buyer">×</td><td class="buyer">×</td></tr>
+            <tr style="background:#fafaf8;"><td style="text-align:left;padding:6px 10px;font-weight:600;">破損・曲がり・へこみ</td>
+              <td class="seller">●</td><td class="buyer">×</td><td class="buyer">×</td></tr>
+            <tr><td style="text-align:left;padding:6px 10px;font-weight:600;">混合・汚染</td>
+              <td class="seller">●</td><td class="buyer">×</td><td class="buyer">×</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p style="font-size:11px;color:var(--text-lt);margin-top:8px;">
+        ※ 旧約款名：ICC(C)≒FPA（単独海損不担保）、ICC(B)≒WA（分損担保）、ICC(A)≒AR（全危険担保）
+      </p>
+    </div>
+
+    <!-- 免責・共通事項 -->
+    <div class="card">
+      <div class="section-title">⚠️ 共通の免責事項（A・B・C すべて不担保）</div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">
+        <div>
+          <ul style="font-size:11px;color:var(--text);line-height:2;margin:0;padding-left:16px;">
+            <li>被保険者の故意または重大な過失</li>
+            <li>通常の漏損・目減り・自然消耗</li>
+            <li>不適切な梱包・荷造りによる損害</li>
+            <li>貨物固有の瑕疵・性質による損害</li>
+            <li>遅延によって生じた損失（利益損失等）</li>
+          </ul>
+        </div>
+        <div>
+          <ul style="font-size:11px;color:var(--text);line-height:2;margin:0;padding-left:16px;">
+            <li>原子力・放射線・核反応による損害</li>
+            <li>戦争・内乱（別途 戦争条項で追加可）</li>
+            <li>ストライキ・暴動（別途 ストライキ条項で追加可）</li>
+            <li>本船の堪航能力の欠如</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <!-- 保険価額・保険料 -->
+    <div class="card">
+      <div class="section-title">💰 保険価額・保険料の計算</div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">
+        <div style="background:#e8f4f0;border-radius:9px;padding:14px 16px;border:1px solid #b2dfdb;">
+          <div style="font-size:12px;font-weight:800;color:#1a5c45;margin-bottom:8px;">📐 保険価額（慣行）</div>
+          <div style="font-size:18px;font-weight:900;color:#1a5c45;text-align:center;margin:8px 0;">CIF価格 × 110%</div>
+          <p style="font-size:11px;color:#2d6a4f;line-height:1.6;margin:0;">
+            貨物のCIF価格に10%の希望利益を上乗せした金額が一般的。インボイス価格がFOBの場合は運賃・保険料を加算してからCIFを算出します。
+          </p>
+        </div>
+        <div style="background:#fef3e8;border-radius:9px;padding:14px 16px;border:1px solid #f9c784;">
+          <div style="font-size:12px;font-weight:800;color:#7c3a0e;margin-bottom:8px;">💴 保険料の計算</div>
+          <div style="font-size:18px;font-weight:900;color:#7c3a0e;text-align:center;margin:8px 0;">保険価額 × 保険料率</div>
+          <p style="font-size:11px;color:#92400e;line-height:1.6;margin:0;">
+            料率は品目・航路・条件により異なります。付保はCIF建て取引では売り手（輸出者）が行い、FOB建てでは買い手（輸入者）が手配するのが通例です。
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <!-- 保険金請求手続き -->
+    <div class="card">
+      <div class="section-title">📋 クレーム（保険金請求）の手続き</div>
+      <div style="overflow-x:auto;">
+        <table class="inco-table" style="min-width:520px;">
+          <thead><tr><th>ステップ</th><th>内容</th><th>ポイント</th></tr></thead>
+          <tbody>
+            <tr><td style="text-align:center;font-weight:700;">①</td>
+              <td style="font-size:11px;">損害の発見・確認</td>
+              <td style="font-size:10px;color:var(--text-lt);">本船・港湾・倉庫で損害を発見したらその場で記録（写真必須）</td></tr>
+            <tr style="background:#fafaf8;"><td style="text-align:center;font-weight:700;">②</td>
+              <td style="font-size:11px;">運送人・保管業者への損害通知（クレームレター）</td>
+              <td style="font-size:10px;color:var(--text-lt);">B/L上の運送人に書面で通知。受取時は清潔でも発見次第速やかに</td></tr>
+            <tr><td style="text-align:center;font-weight:700;">③</td>
+              <td style="font-size:11px;">保険会社へ事故通知</td>
+              <td style="font-size:10px;color:var(--text-lt);">保険証券記載の保険会社・代理店へ連絡。サーベイヤー（検定人）の手配を依頼</td></tr>
+            <tr style="background:#fafaf8;"><td style="text-align:center;font-weight:700;">④</td>
+              <td style="font-size:11px;">サーベイレポートの取得</td>
+              <td style="font-size:10px;color:var(--text-lt);">保険会社指定のサーベイヤーが損害を調査・鑑定し報告書を作成</td></tr>
+            <tr><td style="text-align:center;font-weight:700;">⑤</td>
+              <td style="font-size:11px;">クレーム書類の提出</td>
+              <td style="font-size:10px;color:var(--text-lt);">保険証券・B/L・インボイス・パッキングリスト・サーベイレポート・損害明細</td></tr>
+            <tr style="background:#fafaf8;"><td style="text-align:center;font-weight:700;">⑥</td>
+              <td style="font-size:11px;">保険金の受取</td>
+              <td style="font-size:10px;color:var(--text-lt);">書類審査後に保険会社から支払い。求償権（運送人への追求権）は保険会社へ移転</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+  <div class="feedback-footer">
+    <div class="feedback-footer-title">💬 このタブへのフィードバック・改善要望</div>
+    <textarea class="feedback-textarea" id="fb-insurance" placeholder="ご意見・改善要望・追加してほしい機能などをお書きください"></textarea>
+    <div class="feedback-actions">
+      <button class="btn-primary" style="padding:8px 18px;font-size:13px;" onclick="sendFeedback('海上貨物保険', 'fb-insurance')">送信</button>
+      <span class="feedback-status" id="fb-insurance-status"></span>
+    </div>
+  </div>
+  </div><!-- /tab-insurance -->
+
+  <!-- ===================== Tab: BL約款 ===================== -->
+  <div class="tab-content" id="tab-blclause">
+
+    <!-- BLの種類 -->
+    <div class="card">
+      <div class="section-title">📄 船荷証券（B/L）の種類</div>
+      <div style="overflow-x:auto;">
+        <table class="inco-table" style="min-width:580px;">
+          <thead><tr><th style="width:22%;">区分</th><th style="width:24%;">種類</th><th>内容・特徴</th></tr></thead>
+          <tbody>
+            <tr>
+              <td style="text-align:left;padding:6px 10px;font-weight:700;" rowspan="2">積み込み状態</td>
+              <td class="code-cell" style="font-size:11px;">Shipped B/L<br>（船積式）</td>
+              <td style="font-size:11px;">本船への積み込み完了後に発行。信用状取引で最も一般的に求められる。</td>
+            </tr>
+            <tr style="background:#fafaf8;">
+              <td class="code-cell" style="font-size:11px;">Received B/L<br>（受取式）</td>
+              <td style="font-size:11px;">CYやCFSへの搬入時点で発行。On Board Notation（船積み注記）を追記することで Shipped B/L として扱える。</td>
+            </tr>
+            <tr>
+              <td style="text-align:left;padding:6px 10px;font-weight:700;" rowspan="2">貨物状態</td>
+              <td class="code-cell" style="font-size:11px;">Clean B/L<br>（無故障）</td>
+              <td style="font-size:11px;">貨物の外観に異常なし。信用状決済に必須。</td>
+            </tr>
+            <tr style="background:#fafaf8;">
+              <td class="code-cell" style="font-size:11px;">Claused/Dirty B/L<br>（故障付）</td>
+              <td style="font-size:11px;">破損・汚損等の留保文言（Remarks）あり。L/C決済では原則使用不可。</td>
+            </tr>
+            <tr>
+              <td style="text-align:left;padding:6px 10px;font-weight:700;" rowspan="3">流通性</td>
+              <td class="code-cell" style="font-size:11px;">Negotiable B/L<br>（流通式）</td>
+              <td style="font-size:11px;">裏書（Endorsement）により第三者へ権利譲渡が可能。L/C決済・船積み書類で主流。</td>
+            </tr>
+            <tr style="background:#fafaf8;">
+              <td class="code-cell" style="font-size:11px;">Surrender B/L<br>（サレンダー）</td>
+              <td style="font-size:11px;">輸出地で原本を返却（サレンダー）し、テレックスリリースで荷渡し。近距離・信頼取引で使用。</td>
+            </tr>
+            <tr>
+              <td class="code-cell" style="font-size:11px;">Sea Waybill<br>（海上貨物運送状）</td>
+              <td style="font-size:11px;">非流通式。権利証券ではなく受取証。原本不要で荷渡し可能。グループ間取引・電子化に向く。</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- 主要約款 -->
+    <div class="card">
+      <div class="section-title">📜 B/Lの主要約款（クローズ）解説</div>
+      <div style="overflow-x:auto;">
+        <table class="inco-table" style="min-width:620px;">
+          <thead><tr>
+            <th style="width:22%;">約款名</th>
+            <th style="width:30%;">内容</th>
+            <th>実務上の影響・注意点</th>
+          </tr></thead>
+          <tbody>
+            <tr>
+              <td class="code-cell" style="font-size:11px;">Said to Contain<br>（STC条項）</td>
+              <td style="font-size:11px;">「荷送人の申告による」という意味。コンテナ内容物は船社が確認していない。</td>
+              <td style="font-size:11px;color:var(--text-lt);">コンテナバンニングの内容は荷主責任。申告と実際の相違は荷主負担。</td>
+            </tr>
+            <tr style="background:#fafaf8;">
+              <td class="code-cell" style="font-size:11px;">Shipper's Load<br>& Count（SL&C）</td>
+              <td style="font-size:11px;">貨物の数量・重量はすべて荷送人の申告値。船社は検証していない。</td>
+              <td style="font-size:11px;color:var(--text-lt);">数量違いのクレームは荷主間で解決。船社免責。</td>
+            </tr>
+            <tr>
+              <td class="code-cell" style="font-size:11px;">ヒマラヤ条項<br>（Himalaya）</td>
+              <td style="font-size:11px;">船社の免責・責任制限（ヘーグ・ヴィスビールール）を、使用人・代理人・下請け運送人にも適用拡大。</td>
+              <td style="font-size:11px;color:var(--text-lt);">港運業者・NVOCC等への求償も制限される場合がある。</td>
+            </tr>
+            <tr style="background:#fafaf8;">
+              <td class="code-cell" style="font-size:11px;">責任制限条項<br>（ヘーグ・ヴィスビー）</td>
+              <td style="font-size:11px;">運送人の賠償責任上限を、コンテナ1本につきSDR835または貨物1kg当たりSDR2.5の高い方に制限。</td>
+              <td style="font-size:11px;color:var(--text-lt);">高額貨物は申告価額（Declared Value）を別途記載し責任額を引き上げること。</td>
+            </tr>
+            <tr>
+              <td class="code-cell" style="font-size:11px;">自由裁量条項<br>（Liberty Clause）</td>
+              <td style="font-size:11px;">船社は航路変更・寄港地変更・積替・迂回等を行う自由を持つ。</td>
+              <td style="font-size:11px;color:var(--text-lt);">船社による迂回・延着は免責になる場合が多い。契約書等で到着日を保証させることは困難。</td>
+            </tr>
+            <tr style="background:#fafaf8;">
+              <td class="code-cell" style="font-size:11px;">共同海損条項<br>（GA Clause）</td>
+              <td style="font-size:11px;">共同海損（GA）発生時、荷主はGAアジャスターへの供託（Security）提出が必要。</td>
+              <td style="font-size:11px;color:var(--text-lt);">供託しないと貨物が留置される。貨物保険でGAは通常カバーされる。</td>
+            </tr>
+            <tr>
+              <td class="code-cell" style="font-size:11px;">留置権条項<br>（Lien Clause）</td>
+              <td style="font-size:11px;">運賃・料金未払いの場合、船社は貨物を留置・売却する権利を持つ。</td>
+              <td style="font-size:11px;color:var(--text-lt);">着払い（Freight Collect）取引では荷受人の支払いが荷渡しの前提。</td>
+            </tr>
+            <tr style="background:#fafaf8;">
+              <td class="code-cell" style="font-size:11px;">裁判管轄条項<br>（Jurisdiction）</td>
+              <td style="font-size:11px;">紛争は船社本店所在地（多くは本船の旗国）の裁判所で解決する旨を規定。</td>
+              <td style="font-size:11px;color:var(--text-lt);">日本の荷主が欧州船社に提訴する場合、現地での対応が必要になる場合あり。</td>
+            </tr>
+            <tr>
+              <td class="code-cell" style="font-size:11px;">危険物条項<br>（Dangerous Goods）</td>
+              <td style="font-size:11px;">IMDG Codeに基づく危険物の申告義務・梱包要件・積付け制限を規定。</td>
+              <td style="font-size:11px;color:var(--text-lt);">未申告・虚偽申告は船社が輸送を拒否でき、損害は荷送人全額負担。</td>
+            </tr>
+            <tr style="background:#fafaf8;">
+              <td class="code-cell" style="font-size:11px;">提訴期限条項<br>（Time Bar）</td>
+              <td style="font-size:11px;">損害賠償請求の時効は貨物引渡しから1年（ヘーグ・ヴィスビー準拠）。</td>
+              <td style="font-size:11px;color:var(--text-lt);">1年を超えると原則クレーム不可。損害発見後は速やかに手続きを開始すること。</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div style="margin-top:12px;padding:10px 14px;background:#fffbeb;border-radius:7px;border:1px solid #fcd34d;">
+        <span style="font-size:11px;font-weight:700;color:#92400e;">💡 実務ポイント</span>
+        <p style="font-size:11px;color:#78350f;margin:4px 0 0;line-height:1.6;">
+          B/Lの約款は船社ごとに内容が異なります。輸送条件の確認はB/L裏面（Back Clause）または各船社のウェブサイト上の約款ページで行ってください。<br>
+          高価な貨物・精密機器の輸送では、B/Lへの<strong>申告価額（Declared Value）記載</strong>による責任額引き上げと、<strong>ICC(A)条件の貨物保険</strong>の付保を強く推奨します。
+        </p>
+      </div>
+    </div>
+
+  <div class="feedback-footer">
+    <div class="feedback-footer-title">💬 このタブへのフィードバック・改善要望</div>
+    <textarea class="feedback-textarea" id="fb-blclause" placeholder="ご意見・改善要望・追加してほしい機能などをお書きください"></textarea>
+    <div class="feedback-actions">
+      <button class="btn-primary" style="padding:8px 18px;font-size:13px;" onclick="sendFeedback('BL約款', 'fb-blclause')">送信</button>
+      <span class="feedback-status" id="fb-blclause-status"></span>
+    </div>
+  </div>
+  </div><!-- /tab-blclause -->
+
+
+  <!-- ===================== Tab: 貿易管理令・他法令 ===================== -->
+  <div class="tab-content" id="tab-regs">
+
+    <!-- 輸入通関：他法令 -->
+    <div class="card">
+      <div class="section-title">📥 輸入通関 ― 他法令（関税法以外の規制）</div>
+      <p style="font-size:12px;color:#718096;margin-bottom:12px;">
+        輸入申告に加えて、品目によっては他省庁の許可・承認・確認が必要です。通関前に要件を確認してください。
+      </p>
+      <div style="overflow-x:auto;">
+        <table class="inco-table" style="min-width:700px;">
+          <thead>
+            <tr>
+              <th style="width:14%;">法令名</th>
+              <th style="width:16%;">管轄省庁・窓口</th>
+              <th style="width:20%;">主な対象品目</th>
+              <th style="width:27%;">主な要件・手続き</th>
+              <th style="width:23%;">通関への影響</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td class="code-cell" style="font-size:11px;">食品衛生法</td>
+              <td style="font-size:10px;">厚生労働省<br>検疫所（FAMS）</td>
+              <td style="font-size:10px;">食品、飲料、添加物、食器・包装容器</td>
+              <td style="font-size:10px;">輸入届出書提出→検査（書類/現物）→食品等輸入届出済証の取得</td>
+              <td style="font-size:10px;color:#b91c1c;">届出済証の取得が輸入許可の前提。違反品は廃棄・積戻し。</td>
+            </tr>
+            <tr style="background:#fafaf8;">
+              <td class="code-cell" style="font-size:11px;">植物防疫法</td>
+              <td style="font-size:10px;">農林水産省<br>植物防疫所</td>
+              <td style="font-size:10px;">植物・種子・土壌・木材梱包材（ISPM15非対応）</td>
+              <td style="font-size:10px;">輸出国発行の植物検疫証明書。木材梱包材はIPPC/ISPM15マーク確認。くん蒸処理が必要な場合あり。</td>
+              <td style="font-size:10px;color:#b91c1c;">検疫所の合格証明なしに搬出不可。輸入禁止品目あり。</td>
+            </tr>
+            <tr>
+              <td class="code-cell" style="font-size:11px;">家畜伝染病<br>予防法</td>
+              <td style="font-size:10px;">農林水産省<br>動物検疫所</td>
+              <td style="font-size:10px;">動物・畜産物（肉・乳・卵）、飼料、ペット</td>
+              <td style="font-size:10px;">輸出国政府発行の衛生証明書。動物検疫所での検査・隔離。</td>
+              <td style="font-size:10px;color:#b91c1c;">検査・隔離期間は輸入スケジュールに影響大。</td>
+            </tr>
+            <tr style="background:#fafaf8;">
+              <td class="code-cell" style="font-size:11px;">薬機法<br>（医薬品医療<br>機器等法）</td>
+              <td style="font-size:10px;">厚生労働省<br>都道府県</td>
+              <td style="font-size:10px;">医薬品、医薬部外品、化粧品、医療機器、再生医療等製品</td>
+              <td style="font-size:10px;">輸入業者登録（医薬品輸入販売業等）。品目ごとに製造販売承認・認証・届出が必要。</td>
+              <td style="font-size:10px;color:#b91c1c;">未承認品・個人使用目的以外は原則輸入不可。</td>
+            </tr>
+            <tr>
+              <td class="code-cell" style="font-size:11px;">電気用品<br>安全法（PSE）</td>
+              <td style="font-size:10px;">経済産業省</td>
+              <td style="font-size:10px;">電気用品（電源コード・ACアダプター・電気機器等）</td>
+              <td style="font-size:10px;">特定電気用品（◇PSE）：登録検査機関による適合性検査。<br>特定外（○PSE）：自己確認・届出。</td>
+              <td style="font-size:10px;color:#b91c1c;">PSEマーク未取得品は国内販売・配布禁止。</td>
+            </tr>
+            <tr style="background:#fafaf8;">
+              <td class="code-cell" style="font-size:11px;">電波法<br>（技適）</td>
+              <td style="font-size:10px;">総務省<br>総合通信局</td>
+              <td style="font-size:10px;">無線設備を内蔵する機器（Wi-Fi・Bluetooth・携帯等）</td>
+              <td style="font-size:10px;">技術基準適合証明（技適マーク）の取得または確認。海外認証品は国内では原則使用不可。</td>
+              <td style="font-size:10px;color:#b91c1c;">技適なし機器の国内使用は電波法違反。輸入自体は可能だが使用・販売は不可。</td>
+            </tr>
+            <tr>
+              <td class="code-cell" style="font-size:11px;">消費生活用<br>製品安全法<br>（PSC）</td>
+              <td style="font-size:10px;">経済産業省</td>
+              <td style="font-size:10px;">乗車用ヘルメット、登山用ロープ、石油給湯機、児童用ベッド等</td>
+              <td style="font-size:10px;">特別特定製品（菱形PSC）：第三者機関認証。<br>特定製品（丸形PSC）：自己確認。</td>
+              <td style="font-size:10px;color:#b91c1c;">PSCマーク未取得品は販売禁止。</td>
+            </tr>
+            <tr style="background:#fafaf8;">
+              <td class="code-cell" style="font-size:11px;">化審法<br>（化学物質<br>審査規制法）</td>
+              <td style="font-size:10px;">経産省・環境省<br>厚生労働省</td>
+              <td style="font-size:10px;">新規化学物質、特定化学物質、優先評価化学物質</td>
+              <td style="font-size:10px;">新規化学物質は製造・輸入前に届出・審査が必要。年間1t超が対象（少量・低懸念は簡易手続き）。</td>
+              <td style="font-size:10px;color:#b91c1c;">事前審査なしに輸入した場合は違法。審査期間は数ヶ月かかる場合あり。</td>
+            </tr>
+            <tr>
+              <td class="code-cell" style="font-size:11px;">毒物劇物<br>取締法</td>
+              <td style="font-size:10px;">厚生労働省<br>都道府県</td>
+              <td style="font-size:10px;">毒物・劇物に指定された化学物質（塩酸・硫酸・農薬原体等）</td>
+              <td style="font-size:10px;">毒物劇物輸入業登録（都道府県知事への申請）。保管・管理基準の遵守。</td>
+              <td style="font-size:10px;color:#b91c1c;">登録なしの輸入は禁止。輸入時に通関書類へ記載必要。</td>
+            </tr>
+            <tr style="background:#fafaf8;">
+              <td class="code-cell" style="font-size:11px;">ワシントン<br>条約（CITES）</td>
+              <td style="font-size:10px;">経済産業省<br>動植物検疫</td>
+              <td style="font-size:10px;">絶滅危惧種の動植物・毛皮・象牙・サンゴ・木材等</td>
+              <td style="font-size:10px;">輸出国のCITES輸出許可書＋日本の輸入許可書（経産省）が必要。</td>
+              <td style="font-size:10px;color:#b91c1c;">許可書なしは没収・刑事罰。古物・加工品も対象になる場合あり。</td>
+            </tr>
+            <tr>
+              <td class="code-cell" style="font-size:11px;">外為法<br>輸入承認<br>（IQ等）</td>
+              <td style="font-size:10px;">経済産業省<br>財務省</td>
+              <td style="font-size:10px;">輸入割当品目（IQ）、輸入公表品目（武器・核燃料等）</td>
+              <td style="font-size:10px;">輸入承認申請（経産省）→輸入承認書の取得。IQ品目は割当数量の範囲内で輸入可。</td>
+              <td style="font-size:10px;color:#b91c1c;">承認書なしの通関申告は受理されない。</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- 輸出通関：貿易管理令 -->
+    <div class="card">
+      <div class="section-title">📤 輸出通関 ― 貿易管理令・安全保障輸出管理</div>
+      <p style="font-size:12px;color:#718096;margin-bottom:14px;">
+        日本では<strong>外国為替及び外国貿易法（外為法）</strong>に基づく<strong>輸出貿易管理令</strong>により、特定の品目・地域への輸出には経産省の許可が必要です。
+      </p>
+
+      <!-- 規制の2本柱 -->
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:16px;">
+        <div style="background:#e8f4f0;border-radius:9px;padding:14px 16px;border:1px solid #b2dfdb;">
+          <div style="font-size:12px;font-weight:800;color:#1a5c45;margin-bottom:8px;">📋 リスト規制</div>
+          <p style="font-size:11px;color:#2d6a4f;line-height:1.6;margin:0;">
+            輸出令別表第1に掲げられた品目（武器・核・化学兵器・ミサイル・汎用品等）は、<strong>仕向地・需要者に関わらず</strong>輸出許可が必要。<br>
+            品目は16のカテゴリー（1〜15＋貨物等省令）に分類されます。
+          </p>
+        </div>
+        <div style="background:#fef3e8;border-radius:9px;padding:14px 16px;border:1px solid #f9c784;">
+          <div style="font-size:12px;font-weight:800;color:#7c3a0e;margin-bottom:8px;">🌐 キャッチオール規制</div>
+          <p style="font-size:11px;color:#92400e;line-height:1.6;margin:0;">
+            リスト非該当品でも、<strong>大量破壊兵器等の開発・製造・使用に用いられるおそれ</strong>がある場合は許可申請が必要。<br>
+            ホワイト国（貿易上信頼できる国）向けは適用除外。
+          </p>
+        </div>
+      </div>
+
+      <!-- リスト規制カテゴリー表 -->
+      <div style="font-size:11px;font-weight:700;color:var(--accent-dk);margin-bottom:8px;">📑 輸出令別表第1 規制カテゴリー</div>
+      <div style="overflow-x:auto;margin-bottom:16px;">
+        <table class="inco-table" style="min-width:520px;">
+          <thead><tr><th style="width:8%;">項番</th><th style="width:32%;">カテゴリー</th><th>主な品目例</th></tr></thead>
+          <tbody>
+            <tr><td style="text-align:center;font-weight:700;">1</td><td>武器</td><td style="font-size:10px;">銃砲・火薬・戦車・軍用機・軍用船舶</td></tr>
+            <tr style="background:#fafaf8;"><td style="text-align:center;font-weight:700;">2〜4</td><td>核兵器・核関連品</td><td style="font-size:10px;">核物質、原子炉、ウラン濃縮設備、核爆発装置関連</td></tr>
+            <tr><td style="text-align:center;font-weight:700;">5・6</td><td>化学・生物兵器関連</td><td style="font-size:10px;">特定有毒物質、発酵・合成装置、防護装備</td></tr>
+            <tr style="background:#fafaf8;"><td style="text-align:center;font-weight:700;">7</td><td>ミサイル関連</td><td style="font-size:10px;">推進システム、ロケット、無人機（特定用途）</td></tr>
+            <tr><td style="text-align:center;font-weight:700;">8〜15</td><td>汎用品（デュアルユース）</td><td style="font-size:10px;">先端材料、材料加工機械、電子部品、コンピュータ、通信機器、センサー、航法装置、海洋機器、推進装置</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <!-- 非該当証明 -->
+      <div style="font-size:11px;font-weight:700;color:var(--accent-dk);margin-bottom:8px;">📄 非該当証明（Non-Subject Certificate）</div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:16px;">
+        <div style="font-size:11px;color:var(--text);line-height:1.7;">
+          <strong>目的：</strong>輸出品がリスト規制の対象外であることを証明する書類。<br>
+          <strong>発行者：</strong>メーカーまたは輸出者が自己判断で発行。<br>
+          <strong>求められる場面：</strong>輸入国税関・輸入者から提出を要求された場合、または社内規程による自主確認。
+        </div>
+        <div style="font-size:11px;color:var(--text);line-height:1.7;">
+          <strong>記載内容：</strong>品名・型番・HSコード・輸出令別表の非該当根拠・確認者情報。<br>
+          <strong>注意：</strong>非該当証明はあくまで<em>自社判断</em>の確認書。虚偽記載は外為法違反となる。<br>
+          <strong>用途確認：</strong>大量破壊兵器への転用可能性も含めて確認が必要。
+        </div>
+      </div>
+
+      <!-- 輸出許可申請フロー -->
+      <div style="font-size:11px;font-weight:700;color:var(--accent-dk);margin-bottom:8px;">🔄 輸出許可申請フロー</div>
+      <div style="overflow-x:auto;margin-bottom:16px;">
+        <table class="inco-table" style="min-width:600px;">
+          <thead><tr><th>ステップ</th><th>内容</th><th>担当</th><th>目安期間</th></tr></thead>
+          <tbody>
+            <tr><td style="text-align:center;font-weight:700;">①</td><td style="font-size:10px;">品目の該非判定（リスト規制・キャッチオール確認）</td><td style="font-size:10px;">輸出者・メーカー</td><td style="font-size:10px;">数日〜数週間</td></tr>
+            <tr style="background:#fafaf8;"><td style="text-align:center;font-weight:700;">②</td><td style="font-size:10px;">輸出許可申請書・添付書類の作成（用途証明書、需要者証明書等）</td><td style="font-size:10px;">輸出者</td><td style="font-size:10px;">数日</td></tr>
+            <tr><td style="text-align:center;font-weight:700;">③</td><td style="font-size:10px;">管轄の経済産業局へ申請（電子申請可）</td><td style="font-size:10px;">輸出者</td><td style="font-size:10px;">申請日当日</td></tr>
+            <tr style="background:#fafaf8;"><td style="text-align:center;font-weight:700;">④</td><td style="font-size:10px;">経産局による審査・照会対応</td><td style="font-size:10px;">経産局</td><td style="font-size:10px;">通常2〜4週間</td></tr>
+            <tr><td style="text-align:center;font-weight:700;">⑤</td><td style="font-size:10px;">輸出許可証（Export License）受領</td><td style="font-size:10px;">経産局→輸出者</td><td style="font-size:10px;">—</td></tr>
+            <tr style="background:#fafaf8;"><td style="text-align:center;font-weight:700;">⑥</td><td style="font-size:10px;">輸出許可証を添付して税関へ輸出申告</td><td style="font-size:10px;">通関業者</td><td style="font-size:10px;">—</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div style="padding:10px 14px;background:#fffbeb;border-radius:7px;border:1px solid #fcd34d;">
+        <span style="font-size:11px;font-weight:700;color:#92400e;">⚠️ 罰則と社内管理体制</span>
+        <p style="font-size:11px;color:#78350f;margin:4px 0 0;line-height:1.6;">
+          無許可輸出は<strong>外為法違反（最大懲役5年・罰金3億円）</strong>となります。<br>
+          多くの企業では社内管理プログラム（CP: Compliance Program）を整備し、取引審査・役職員教育・帳票管理を体系的に実施しています。<br>
+          輸出管理違反が発覚した場合、輸出禁止措置（行政制裁）が科されることもあります。
+        </p>
+      </div>
+    </div>
+
+  <div class="feedback-footer">
+    <div class="feedback-footer-title">💬 このタブへのフィードバック・改善要望</div>
+    <textarea class="feedback-textarea" id="fb-regs" placeholder="ご意見・改善要望・追加してほしい機能などをお書きください"></textarea>
+    <div class="feedback-actions">
+      <button class="btn-primary" style="padding:8px 18px;font-size:13px;" onclick="sendFeedback('貿易管理令・他法令', 'fb-regs')">送信</button>
+      <span class="feedback-status" id="fb-regs-status"></span>
+    </div>
+  </div>
+  </div><!-- /tab-regs -->
+  <!-- ===================== Tab: ファイリングルール ===================== -->
+  <!-- ===== tab-booking-tab ===== -->
+  <div class="tab-content" id="tab-booking-tab">
+    <div class="card">
+      <div class="section-title">🛳️ 船会社 e-Booking ページ</div>
+      <p style="font-size:12px;color:var(--text-md);margin-bottom:16px;">
+        各船会社の e-Booking（オンライン予約）ページへのリンクです。<br>
+        <span style="font-size:11px;">🔐 = ログインが必要 ／ ⚠️ = URL未確認・要確認</span>
+      </p>
+      <div class="carrier-grid" id="booking-grid"></div>
+    </div>
+    <div class="feedback-footer">
+      <div class="feedback-footer-title">💬 このタブへのフィードバック・改善要望</div>
+      <textarea class="feedback-textarea" id="fb-booking-tab" placeholder="ご意見・改善要望などをお書きください"></textarea>
+      <button class="feedback-btn" onclick="sendFeedback('booking-tab')">送信</button>
+      <span class="feedback-status" id="fb-booking-tab-status"></span>
+    </div>
+  </div><!-- /tab-booking-tab -->
+
+  <!-- ===== tab-si ===== -->
+  <div class="tab-content" id="tab-si">
+    <div class="card">
+      <div class="section-title">📝 仕向地別 BL 記載事項</div>
+      <p style="font-size:12px;color:var(--text-md);margin-bottom:16px;">
+        国・地域によってはB/Lに特定の情報を必ず記載しなければならないルールがあります。<br>
+        記載漏れ・誤記はD/Oリリース遅延・罰金・貨物抑留につながります。
+      </p>
+      <div style="padding:18px;background:var(--accent-lt);border-radius:10px;border:1px dashed var(--border-md);text-align:center;color:var(--text-md);">
+        <div style="font-size:28px;margin-bottom:8px;">🚧</div>
+        <div style="font-size:13px;font-weight:700;color:var(--accent-dk);">仕向地別BL記載事項を順次追加予定</div>
+        <div style="font-size:11px;margin-top:6px;line-height:1.8;">
+          Egypt（ACID番号必須）/ USA（Ultimate Consignee）/ India（IEC番号）など<br>
+          追加すべき仕向地があればフィードバックからお知らせください。
+        </div>
+      </div>
+    </div>
+    <!-- エジプト ACID -->
+    <div class="card">
+      <div class="section-title">🇪🇬 エジプト — ACID番号（NAFEZA）必須記載</div>
+      <p style="font-size:12px;color:var(--text-md);margin-bottom:12px;">
+        エジプト輸入者が取得した <strong>ACID番号</strong> をB/L・Invoice・Packing Listに必ず記載します。
+        詳細はファイリングルールタブのエジプトセクションを参照してください。
+      </p>
+      <div style="padding:10px 14px;background:#e8f5e9;border-radius:7px;border:1px solid #a5d6a7;font-size:11px;color:#1b5e20;">
+        <strong>記載例：</strong> Description of Goods 欄の末尾に <code style="background:#fff;padding:1px 5px;border-radius:3px;">ACID: 1234567890123456</code> を追記
+      </div>
+    </div>
+    <div class="feedback-footer">
+      <div class="feedback-footer-title">💬 このタブへのフィードバック・改善要望</div>
+      <textarea class="feedback-textarea" id="fb-si" placeholder="追加してほしい仕向地・ルールなどをお書きください"></textarea>
+      <button class="feedback-btn" onclick="sendFeedback('si')">送信</button>
+      <span class="feedback-status" id="fb-si-status"></span>
+    </div>
+  </div><!-- /tab-si -->
+
+
+  <div class="tab-content" id="tab-filing">
+
+    <!-- 制度概要一覧 -->
+    <div class="card">
+      <div class="section-title">📡 主要国のファイリング制度一覧</div>
+      <p style="font-size:12px;color:#718096;margin-bottom:12px;">
+        各国の税関は貨物の安全管理のため、本船出港前に貨物情報の事前申告を義務付けています。提出遅延・不備はリレース拒否・罰則の対象となります。
+      </p>
+      <div style="overflow-x:auto;">
+        <table class="inco-table" style="min-width:700px;">
+          <thead>
+            <tr>
+              <th>制度名</th>
+              <th>対象</th>
+              <th>提出義務者</th>
+              <th>提出期限（海上）</th>
+              <th>提出先・システム</th>
+              <th>未提出時のペナルティ</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td class="code-cell" style="font-size:11px;">AFR<br><span style="font-weight:400;font-size:10px;">事前報告制度（日本）</span></td>
+              <td style="font-size:10px;">日本<b>宛て</b>輸入貨物（海上）</td>
+              <td style="font-size:10px;">船社・NVOCC</td>
+              <td style="font-size:10px;font-weight:700;color:#b91c1c;">積出港出港<b>24時間前</b></td>
+              <td style="font-size:10px;">日本税関（NACCS）</td>
+              <td style="font-size:10px;color:#b91c1c;">過料（最大50万円）・荷揚げ禁止</td>
+            </tr>
+            <tr style="background:#fafaf8;">
+              <td class="code-cell" style="font-size:11px;">AMS<br><span style="font-weight:400;font-size:10px;">Automated Manifest System</span></td>
+              <td style="font-size:10px;">米国<b>宛て</b>輸入貨物（海上）</td>
+              <td style="font-size:10px;">船社（NVOCC含む）</td>
+              <td style="font-size:10px;font-weight:700;color:#b91c1c;">積出港出港<b>24時間前</b></td>
+              <td style="font-size:10px;">米国CBP（AMS/ABI）</td>
+              <td style="font-size:10px;color:#b91c1c;">DO NOT LOAD命令・罰金</td>
+            </tr>
+            <tr>
+              <td class="code-cell" style="font-size:11px;">ISF<br><span style="font-weight:400;font-size:10px;">Importer Security Filing（10+2）</span></td>
+              <td style="font-size:10px;">米国<b>宛て</b>輸入貨物（海上）</td>
+              <td style="font-size:10px;">輸入者<br>（CBカスタムスブローカーが代行）</td>
+              <td style="font-size:10px;font-weight:700;color:#b91c1c;">積出港出港<b>24時間前</b></td>
+              <td style="font-size:10px;">米国CBP（ABI経由）</td>
+              <td style="font-size:10px;color:#b91c1c;">最大$5,000/違反 · 貨物検査</td>
+            </tr>
+            <tr style="background:#fafaf8;">
+              <td class="code-cell" style="font-size:11px;">ENS<br><span style="font-weight:400;font-size:10px;">Entry Summary Declaration</span></td>
+              <td style="font-size:10px;">EU<b>宛て</b>輸入貨物（海上）</td>
+              <td style="font-size:10px;">First Carrier（最初の運送人）</td>
+              <td style="font-size:10px;font-weight:700;color:#b91c1c;">積出港出港<b>24時間前</b></td>
+              <td style="font-size:10px;">EU加盟国税関（ICS2）</td>
+              <td style="font-size:10px;color:#b91c1c;">入港拒否・積み直し指示</td>
+            </tr>
+            <tr>
+              <td class="code-cell" style="font-size:11px;">ACI<br><span style="font-weight:400;font-size:10px;">Advance Commercial Information</span></td>
+              <td style="font-size:10px;">カナダ<b>宛て</b>輸入貨物（海上）</td>
+              <td style="font-size:10px;">船社</td>
+              <td style="font-size:10px;font-weight:700;color:#b91c1c;">積出港出港<b>24時間前</b></td>
+              <td style="font-size:10px;">カナダ国境サービス庁（CBSA）</td>
+              <td style="font-size:10px;color:#b91c1c;">貨物の荷揚げ拒否</td>
+            </tr>
+            <tr style="background:#fafaf8;">
+              <td class="code-cell" style="font-size:11px;">UK Safety &amp;<br>Security<br><span style="font-weight:400;font-size:10px;">（Brexit後）</span></td>
+              <td style="font-size:10px;">英国<b>宛て</b>輸入貨物（海上）</td>
+              <td style="font-size:10px;">First Carrier</td>
+              <td style="font-size:10px;font-weight:700;color:#b91c1c;">積出港出港<b>24時間前</b></td>
+              <td style="font-size:10px;">英国HMRC（CDS）</td>
+              <td style="font-size:10px;color:#b91c1c;">入港拒否・罰則</td>
+            </tr>
+            <tr>
+              <td class="code-cell" style="font-size:11px;">SOLAS VGM<br><span style="font-weight:400;font-size:10px;">（厳密にはファイリングではないが必須）</span></td>
+              <td style="font-size:10px;">全世界向け輸出コンテナ</td>
+              <td style="font-size:10px;">荷送人（Shipper）</td>
+              <td style="font-size:10px;font-weight:700;color:#b91c1c;">船社締め切り前<br>（CY搬入前が一般的）</td>
+              <td style="font-size:10px;">船社へ提出（書面/電子）</td>
+              <td style="font-size:10px;color:#b91c1c;">VGM未提出コンテナは船積み不可</td>
+            </tr>
+            <tr style="background:#fafaf8;">
+              <td class="code-cell" style="font-size:11px;">NAFEZA / ACID<br><span style="font-weight:400;font-size:10px;">（エジプト）</span></td>
+              <td style="font-size:10px;">エジプト<b>宛て</b>輸入貨物</td>
+              <td style="font-size:10px;">輸入者（ACID取得）<br>船社・NVOCC（B/L記載）</td>
+              <td style="font-size:10px;font-weight:700;color:#b91c1c;">積出港出港<b>48時間前</b></td>
+              <td style="font-size:10px;">NAFEZA（nafeza.gov.eg）</td>
+              <td style="font-size:10px;color:#b91c1c;">港湾留め置き・通関不可</td>
+            </tr>
+            <tr>
+              <td class="code-cell" style="font-size:11px;">UAE 事前申告<br><span style="font-weight:400;font-size:10px;">（Dubai/Abu Dhabi）</span></td>
+              <td style="font-size:10px;">UAE<b>宛て</b>輸入貨物</td>
+              <td style="font-size:10px;">船社・フォワーダー</td>
+              <td style="font-size:10px;font-weight:700;color:#b91c1c;">入港<b>24時間前</b>（目安）</td>
+              <td style="font-size:10px;">Dubai: Mirsal2<br>Abu Dhabi: ADCUSTOMSGATE</td>
+              <td style="font-size:10px;color:#b91c1c;">クリアランス遅延・留め置き</td>
+            </tr>
+            <tr style="background:#fafaf8;">
+              <td class="code-cell" style="font-size:11px;">Saudi Customs<br><span style="font-weight:400;font-size:10px;">（サウジアラビア）</span></td>
+              <td style="font-size:10px;">サウジ<b>宛て</b>輸入貨物</td>
+              <td style="font-size:10px;">輸入者・船社</td>
+              <td style="font-size:10px;">入港前（FASAH経由）</td>
+              <td style="font-size:10px;">FASAH（国家物流窓口）</td>
+              <td style="font-size:10px;color:#b91c1c;">貨物留め置き</td>
+            </tr>
+            <tr>
+              <td class="code-cell" style="font-size:11px;">India IGM<br><span style="font-weight:400;font-size:10px;">（インド）</span></td>
+              <td style="font-size:10px;">インド<b>宛て</b>輸入貨物</td>
+              <td style="font-size:10px;">船社（Arrival Agent経由）</td>
+              <td style="font-size:10px;">入港<b>24時間前</b></td>
+              <td style="font-size:10px;">インド税関 ICEGATE</td>
+              <td style="font-size:10px;color:#b91c1c;">入港許可遅延</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- AFR詳細 -->
+    <div class="card">
+      <div class="section-title">🇯🇵 AFR（事前報告制度）― 日本税関</div>
+      <p style="font-size:12px;color:#718096;margin-bottom:12px;">
+        2014年3月施行。関税法第15条の3に基づき、外国から日本へ海上コンテナで輸入される貨物の情報を積出港出港24時間前までに日本税関へ報告する制度。
+      </p>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:12px;">
+        <div>
+          <div style="font-size:11px;font-weight:700;color:var(--accent-dk);margin-bottom:6px;">📋 提出が必要な情報（主要項目）</div>
+          <table class="inco-table">
+            <thead><tr><th>項目</th><th>内容</th></tr></thead>
+            <tbody>
+              <tr><td style="text-align:left;padding:4px 8px;font-size:10px;font-weight:600;">B/L番号</td><td style="font-size:10px;">MBL・HBL両方</td></tr>
+              <tr style="background:#fafaf8;"><td style="text-align:left;padding:4px 8px;font-size:10px;font-weight:600;">品名（英語）</td><td style="font-size:10px;">一般的品名。FAKは不可</td></tr>
+              <tr><td style="text-align:left;padding:4px 8px;font-size:10px;font-weight:600;">重量・数量</td><td style="font-size:10px;">総重量・コンテナ数</td></tr>
+              <tr style="background:#fafaf8;"><td style="text-align:left;padding:4px 8px;font-size:10px;font-weight:600;">荷送人（Shipper）</td><td style="font-size:10px;">名称・住所</td></tr>
+              <tr><td style="text-align:left;padding:4px 8px;font-size:10px;font-weight:600;">荷受人（Consignee）</td><td style="font-size:10px;">名称・住所</td></tr>
+              <tr style="background:#fafaf8;"><td style="text-align:left;padding:4px 8px;font-size:10px;font-weight:600;">Notify Party</td><td style="font-size:10px;">着荷通知先</td></tr>
+              <tr><td style="text-align:left;padding:4px 8px;font-size:10px;font-weight:600;">積出港・仕向港</td><td style="font-size:10px;">港コード（UNLOC）</td></tr>
+              <tr style="background:#fafaf8;"><td style="text-align:left;padding:4px 8px;font-size:10px;font-weight:600;">コンテナ番号</td><td style="font-size:10px;">全コンテナ</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <div>
+          <div style="font-size:11px;font-weight:700;color:var(--accent-dk);margin-bottom:6px;">⚠️ AFRの注意点</div>
+          <ul style="font-size:11px;color:var(--text);line-height:2;margin:0;padding-left:16px;">
+            <li><b>報告義務者は船社またはNVOCC</b>（フォワーダーは船社経由で情報提供）</li>
+            <li>品名は具体的に記載。「Freight All Kinds（FAK）」「General Cargo」等は不可</li>
+            <li>NVOCCは<b>HBL情報</b>を別途船社経由でNACCSへ報告</li>
+            <li>訂正申告は出港後でも可能だが、虚偽申告は過料対象</li>
+            <li>危険物を含む場合は品名・UN番号を正確に記載</li>
+            <li>積替え貨物（Transshipment）も対象</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <!-- AMS / ISF詳細 -->
+    <div class="card">
+      <div class="section-title">🇺🇸 AMS / ISF（10+2）― 米国CBP</div>
+
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:12px;">
+        <!-- AMS -->
+        <div style="background:#e8f4f0;border-radius:9px;padding:14px;border:1px solid #b2dfdb;">
+          <div style="font-size:12px;font-weight:800;color:#1a5c45;margin-bottom:8px;">📤 AMS（Automated Manifest System）</div>
+          <p style="font-size:11px;color:#2d6a4f;line-height:1.7;margin:0 0 8px;">
+            <b>義務者：</b>船社・NVOCC（HBL発行者）<br>
+            <b>期限：</b>積出港出港24時間前<br>
+            <b>システム：</b>CBP AMS / ABI
+          </p>
+          <div style="font-size:11px;font-weight:700;color:#1a5c45;margin-bottom:4px;">主な記載項目</div>
+          <ul style="font-size:10px;color:#2d6a4f;line-height:1.8;margin:0;padding-left:14px;">
+            <li>B/L番号（MBL / HBL）</li>
+            <li>品名（具体的な一般名称。FAK不可）</li>
+            <li>重量・数量・コンテナ番号</li>
+            <li>荷送人・荷受人・Notify Party（名称・住所）</li>
+            <li>積出港・仕向港・SCAC CODE</li>
+          </ul>
+        </div>
+
+        <!-- ISF -->
+        <div style="background:#fef3e8;border-radius:9px;padding:14px;border:1px solid #f9c784;">
+          <div style="font-size:12px;font-weight:800;color:#7c3a0e;margin-bottom:8px;">📥 ISF 10+2（Importer Security Filing）</div>
+          <p style="font-size:11px;color:#92400e;line-height:1.7;margin:0 0 8px;">
+            <b>義務者：</b>米国輸入者（カスタムスブローカーが代行）<br>
+            <b>期限：</b>積出港出港24時間前<br>
+            <b>罰則：</b>最大$5,000/違反
+          </p>
+          <div style="font-size:11px;font-weight:700;color:#7c3a0e;margin-bottom:4px;">10項目（輸入者が提出）</div>
+          <ol style="font-size:10px;color:#92400e;line-height:1.8;margin:0;padding-left:16px;">
+            <li>製造者（Manufacturer）</li>
+            <li>販売者（Seller）</li>
+            <li>買い手（Buyer）</li>
+            <li>荷受人（Ship-to party）</li>
+            <li>容器詰め業者（Container Stuffer）</li>
+            <li>貨物取りまとめ業者（Consolidator）</li>
+            <li>輸入者（Importer of Record）</li>
+            <li>仕向地（Consignee）</li>
+            <li>HSコード（米国HTS 6桁）</li>
+            <li>原産国（Country of Origin）</li>
+          </ol>
+          <div style="font-size:10px;color:#92400e;margin-top:6px;">＋2項目（船社が提出）：コンテナ番号・船積み状況</div>
+        </div>
+      </div>
+
+      <div style="padding:10px 14px;background:#fffbeb;border-radius:7px;border:1px solid #fcd34d;">
+        <span style="font-size:11px;font-weight:700;color:#92400e;">⚠️ 品名記載の注意（AMS・AFR共通）</span>
+        <p style="font-size:11px;color:#78350f;margin:4px 0 0;line-height:1.6;">
+          <b>「FAK（Freight All Kinds）」「General Cargo」「Various」「Parts」等の汎用品名は各国税関で拒否されます。</b><br>
+          「Automobile Parts」→「Brake Pads for Automobiles」、「Machinery」→「Industrial Sewing Machines」のように具体的な品名を記載してください。<br>
+          不適切品名は Do Not Load（積み込み禁止）命令の原因となります。
+        </p>
+      </div>
+    </div>
+
+    <!-- SOLAS VGM -->
+    <div class="card">
+      <div class="section-title">⚖️ SOLAS VGM（コンテナ総重量確認）</div>
+      <p style="font-size:12px;color:#718096;margin-bottom:12px;">
+        2016年7月施行。SOLAS条約改正によりすべての輸出コンテナについて荷送人が<b>VGM（Verified Gross Mass：確認済み総重量）</b>を船社へ提出することが義務化されました。
+      </p>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">
+        <div>
+          <div style="font-size:11px;font-weight:700;color:var(--accent-dk);margin-bottom:6px;">Method 1（計量方式）</div>
+          <p style="font-size:11px;color:var(--text);line-height:1.7;">
+            コンテナ全体を計量機器で計測。<br>
+            <b>VGM ＝ コンテナ総重量（貨物＋梱包＋コンテナ自体の風袋）</b><br>
+            最も正確。大型計量機のある港頭地区でが対応。
+          </p>
+        </div>
+        <div>
+          <div style="font-size:11px;font-weight:700;color:var(--accent-dk);margin-bottom:6px;">Method 2（計算方式）</div>
+          <p style="font-size:11px;color:var(--text);line-height:1.7;">
+            個々の貨物・梱包材・パレットの重量を合計し、コンテナの風袋重量（Tare Weight）を加算。<br>
+            <b>VGM ＝ 貨物合計重量 ＋ 梱包重量 ＋ コンテナ風袋重量</b>
+          </p>
+        </div>
+      </div>
+      <div style="margin-top:10px;padding:10px 14px;background:#f0f9ff;border-radius:7px;border:1px solid #bae6fd;">
+        <span style="font-size:11px;font-weight:700;color:#0c4a6e;">💡 VGM提出のポイント</span>
+        <p style="font-size:11px;color:#0e7490;margin:4px 0 0;line-height:1.6;">
+          提出期限は船社のSI（Shipping Instruction）締め切りと同タイミングが一般的。VGM未提出コンテナは本船に積み込めません。<br>
+          提出方法は船社ポータル・EDI・メール等。フォワーダーが荷主に代わって提出代行することも多い。
+        </p>
+      </div>
+    </div>
+
+
+
+    <!-- エジプト NAFEZA/ACID 詳細 -->
+    <div class="card">
+      <div class="section-title">🇪🇬 エジプト — NAFEZA / ACID（事前貨物情報申告）</div>
+      <p style="font-size:12px;color:var(--text-md);margin-bottom:12px;">
+        2021年10月より段階的に義務化。エジプト輸入者が <strong>NAFEZA（National Single Window for Foreign Trade Facilitation）</strong> ポータルで
+        <strong>ACID（Advance Cargo Information Declaration）番号</strong> を取得し、B/L・Invoice・Packing Listに記載することが必須です。
+      </p>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:12px;">
+        <div style="background:#e8f5e9;border-radius:9px;padding:14px;border:1px solid #a5d6a7;">
+          <div style="font-size:12px;font-weight:800;color:#1b5e20;margin-bottom:8px;">📋 ACID取得フロー</div>
+          <ol style="font-size:11px;color:#2e7d32;line-height:2;margin:0;padding-left:16px;">
+            <li>エジプト輸入者がNAFEZAポータルに登録</li>
+            <li>貨物情報（品名・HSコード・重量・価額・Shipper/Consignee）を入力</li>
+            <li>ACID番号が発行される</li>
+            <li>輸出者・フォワーダーへACID番号を通知</li>
+            <li>B/L・Invoice・Packing ListにACID番号を記載</li>
+          </ol>
+        </div>
+        <div>
+          <div style="font-size:11px;font-weight:700;color:var(--accent-dk);margin-bottom:6px;">📄 B/Lへの記載方法</div>
+          <table class="inco-table">
+            <thead><tr><th>記載箇所</th><th>内容</th></tr></thead>
+            <tbody>
+              <tr><td style="font-size:10px;">Description of Goods</td><td style="font-size:10px;">品名末尾に「ACID: XXXXXXXXXXXXXXXX」を追記</td></tr>
+              <tr style="background:#fafaf8;"><td style="font-size:10px;">Marks &amp; Numbers</td><td style="font-size:10px;">ACIDを記載する船社もあり（船社指示に従う）</td></tr>
+              <tr><td style="font-size:10px;">Invoice・P/L</td><td style="font-size:10px;">必ず同じACID番号を記載</td></tr>
+            </tbody>
+          </table>
+          <div style="margin-top:10px;padding:8px 12px;background:#fff8e1;border-radius:7px;border:1px solid #ffe082;font-size:11px;color:#e65100;">
+            ⚠️ <strong>申告情報との不一致</strong>（品名・数量・HSコードなど）があると、アレキサンドリア港等で<strong>貨物が留め置き</strong>になります。
+            輸入者から正確なACIDを受領してから船積みすること。
+          </div>
+        </div>
+      </div>
+      <div style="padding:8px 14px;background:#e3f2fd;border-radius:7px;border:1px solid #90caf9;font-size:11px;color:#1565c0;">
+        ⏱️ 期限：積出港出港の <strong>48時間前</strong> までにACID番号をB/Lに反映　／　
+        🌐 <a href="https://www.nafeza.gov.eg" target="_blank" style="color:#1565c0;">nafeza.gov.eg</a>
+      </div>
+    </div>
+
+    <!-- UAE 詳細 -->
+    <div class="card">
+      <div class="section-title">🇦🇪 UAE — 事前マニフェスト申告（Dubai / Abu Dhabi）</div>
+      <p style="font-size:12px;color:var(--text-md);margin-bottom:12px;">
+        UAEには Dubai（Mirsal2）と Abu Dhabi（ADCUSTOMSGATE）の2つの主要税関システムがあります。
+        いずれも <strong>入港前に事前マニフェスト申告</strong> が必要で、申告内容はB/Lと一致していなければなりません。
+      </p>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:12px;">
+        <div style="background:#e3f2fd;border-radius:9px;padding:14px;border:1px solid #90caf9;">
+          <div style="font-size:12px;font-weight:800;color:#0d47a1;margin-bottom:8px;">🏙️ Dubai Customs — Mirsal2</div>
+          <ul style="font-size:11px;color:#1565c0;line-height:2;margin:0;padding-left:14px;">
+            <li>申告システム：<strong>Mirsal2</strong>（Dubai Trade Portal経由）</li>
+            <li>義務者：船社・フォワーダー（NVOCC）</li>
+            <li>期限：<strong>入港24時間前</strong>（目安）</li>
+            <li>貨物記述はB/Lと完全一致が必要</li>
+            <li>危険物（DG）は別途事前通知が必要</li>
+          </ul>
+        </div>
+        <div style="background:#f3e5f5;border-radius:9px;padding:14px;border:1px solid #ce93d8;">
+          <div style="font-size:12px;font-weight:800;color:#4a148c;margin-bottom:8px;">🏛️ Abu Dhabi Customs — ADCUSTOMSGATE</div>
+          <ul style="font-size:11px;color:#6a1b9a;line-height:2;margin:0;padding-left:14px;">
+            <li>申告システム：<strong>ADCUSTOMSGATE</strong></li>
+            <li>義務者：船社・フォワーダー（Clearing Agent経由が一般的）</li>
+            <li>期限：<strong>入港前</strong></li>
+            <li>貨物情報（品名・HSコード・重量・積地・荷受人）を申告</li>
+            <li>Clearing Agent（通関代理人）のサポートが実務上必要</li>
+          </ul>
+        </div>
+      </div>
+      <div style="padding:10px 14px;background:#fff8e1;border-radius:7px;border:1px solid #ffe082;font-size:11px;color:#e65100;">
+        ⚠️ <strong>新ルール情報：</strong> UAEは通関制度を継続的に更新中です。最新情報は各船社・現地エージェントへ必ず確認してください。
+      </div>
+    </div>
+
+  <div class="feedback-footer">
+    <div class="feedback-footer-title">💬 このタブへのフィードバック・改善要望</div>
+    <textarea class="feedback-textarea" id="fb-filing" placeholder="ご意見・改善要望・追加してほしい機能などをお書きください"></textarea>
+    <div class="feedback-actions">
+      <button class="btn-primary" style="padding:8px 18px;font-size:13px;" onclick="sendFeedback('ファイリングルール', 'fb-filing')">送信</button>
+      <span class="feedback-status" id="fb-filing-status"></span>
+    </div>
+  </div>
+  </div><!-- /tab-filing -->
+
+
+
+
+
+  <!-- ===================== Tab 7: 計算ツール ===================== -->
+  <div class="tab-content active" id="tab-calc">
+
+    <!-- 1. 航空チャージャブルウェイト -->
+    <div class="card">
+      <div class="section-title">✈️ 航空チャージャブルウェイト計算</div>
+      <p class="calc-desc">実重量と容積重量を比較し、大きい方がチャージャブルウェイト（請求対象重量）になります。<br>
+        <span style="font-size:11px;">容積重量(kg) = L × W × H(cm) ÷ 6,000　（IATA基準）</span></p>
+      <div class="lookup-form" style="align-items:flex-end;">
+        <div class="calc-field"><span class="calc-label">長さ (cm)</span><input type="number" class="calc-input" id="air-l" placeholder="60" min="0"></div>
+        <div class="calc-field"><span class="calc-label">幅 (cm)</span><input type="number" class="calc-input" id="air-w" placeholder="40" min="0"></div>
+        <div class="calc-field"><span class="calc-label">高さ (cm)</span><input type="number" class="calc-input" id="air-h" placeholder="30" min="0"></div>
+        <div class="calc-field"><span class="calc-label">実重量 (kg)</span><input type="number" class="calc-input" id="air-weight" placeholder="5" min="0"></div>
+        <div class="calc-field"><span class="calc-label">個数</span><input type="number" class="calc-input" id="air-qty" value="1" min="1" style="width:70px;"></div>
+        <button class="btn-primary" onclick="calcAirCW()">計算 →</button>
+        <button class="btn-clear" onclick="clearCalcResult('air-result')">クリア</button>
+      </div>
+      <div id="air-result" class="calc-result" style="display:none;"></div>
+    </div>
+
+    <!-- 2. LCL RT/W/M計算 -->
+    <div class="card">
+      <div class="section-title">🚢 LCL RT（W/M）計算</div>
+      <p class="calc-desc">LCL運賃は <strong>RT（Revenue Ton）</strong>= CBM と 重量(ton) の大きい方（W/M）で計算されます。<br>
+        <span style="font-size:11px;">W（Weight）= 実重量(kg) ÷ 1,000　／　M（Measurement）= CBM　／　大きい方を1RTとして運賃計算</span></p>
+      <div class="lookup-form" style="align-items:flex-end;">
+        <div class="calc-field"><span class="calc-label">長さ (cm)</span><input type="number" class="calc-input" id="lcl-l" placeholder="60" min="0"></div>
+        <div class="calc-field"><span class="calc-label">幅 (cm)</span><input type="number" class="calc-input" id="lcl-w" placeholder="40" min="0"></div>
+        <div class="calc-field"><span class="calc-label">高さ (cm)</span><input type="number" class="calc-input" id="lcl-h" placeholder="30" min="0"></div>
+        <div class="calc-field"><span class="calc-label">実重量 (kg)</span><input type="number" class="calc-input" id="lcl-weight" placeholder="50" min="0"></div>
+        <div class="calc-field"><span class="calc-label">個数</span><input type="number" class="calc-input" id="lcl-qty" value="1" min="1" style="width:70px;"></div>
+        <button class="btn-primary" onclick="calcLclRT()">計算 →</button>
+        <button class="btn-clear" onclick="clearCalcResult('lcl-result')">クリア</button>
+      </div>
+      <div id="lcl-result" class="calc-result" style="display:none;"></div>
+    </div>
+
+    <!-- 3. 容積（CBM）・才数計算 統合 -->
+    <div class="card">
+      <div class="section-title">📦 容積（CBM）・才数計算</div>
+      <p class="calc-desc">CBM（海上輸送の容積単位）と才数（国内運送の容積単位）を同時に算出します。<br>
+        <span style="font-size:11px;">CBM = L×W×H(m)　／　才数 = L×W×H(cm) ÷ 27,826.5　／　各単位で自動換算</span><br>
+        <span style="font-size:11px;line-height:1.9;">🚛 トラック積載目安：軽バン <strong>〜40才</strong>　／　2t <strong>〜120才</strong>　／　4t <strong>〜250才</strong>　／　10t <strong>〜580才</strong></span></p>
+      <div class="lookup-form" style="align-items:flex-end;">
+        <div class="calc-field"><span class="calc-label">単位</span>
+          <select id="cbm-unit" style="padding:10px 13px;border:1.5px solid #e2e8f0;border-radius:8px;font-size:13px;background:#f8fafc;min-width:90px;">
+            <option value="cm">cm</option>
+            <option value="mm">mm</option>
+            <option value="in">inch</option>
+            <option value="m">m</option>
+          </select>
+        </div>
+        <div class="calc-field"><span class="calc-label">長さ</span><input type="number" class="calc-input" id="cbm-l" placeholder="60" min="0"></div>
+        <div class="calc-field"><span class="calc-label">幅</span><input type="number" class="calc-input" id="cbm-w" placeholder="40" min="0"></div>
+        <div class="calc-field"><span class="calc-label">高さ</span><input type="number" class="calc-input" id="cbm-h" placeholder="30" min="0"></div>
+        <div class="calc-field"><span class="calc-label">個数</span><input type="number" class="calc-input" id="cbm-qty" value="1" min="1" style="width:70px;"></div>
+        <button class="btn-primary" onclick="calcCBMSai()">計算 →</button>
+        <button class="btn-clear" onclick="clearCalcResult('cbm-result')">クリア</button>
+      </div>
+      <div id="cbm-result" class="calc-result" style="display:none;"></div>
+    </div>
+
+    <!-- 4. パレタイズシミュレーション -->
+    <div class="card">
+      <div class="section-title">🔲 パレタイズシミュレーション</div>
+      <p class="calc-desc">パレット上に箱が何個積めるかをシミュレーションします。最も効率的な向きを自動選択します。<br>
+        <span style="font-size:11px;line-height:1.9;">📦 標準パレットサイズ：T11（日本標準） <strong>1100×1100mm</strong>　／　ISO/EUR-2 <strong>1200×1000mm</strong>　／　EUR pallet <strong>1200×800mm</strong>　／　北米標準 <strong>1219×1016mm</strong>（48×40インチ）</span></p>
+      <div class="lookup-form" style="align-items:flex-end;">
+        <div class="calc-field"><span class="calc-label">パレットサイズ</span>
+          <select id="pal-size" onchange="togglePalCustom()" style="padding:10px 13px;border:1.5px solid #e2e8f0;border-radius:8px;font-size:13px;background:#f8fafc;min-width:190px;">
+            <option value="1100x1100">T11: 1100×1100 mm</option>
+            <option value="1200x1000">ISO: 1200×1000 mm</option>
+            <option value="1200x800">EUR: 1200×800 mm</option>
+            <option value="1219x1016">北米: 1219×1016 mm</option>
+            <option value="custom">カスタム</option>
+          </select>
+        </div>
+        <div id="pal-custom-wrap" style="display:none;flex-direction:row;gap:8px;flex-wrap:wrap;align-items:flex-end;">
+          <div class="calc-field"><span class="calc-label">パレット縦 (mm)</span><input type="number" class="calc-input" id="pal-pw" placeholder="1100" style="width:100px;"></div>
+          <div class="calc-field"><span class="calc-label">パレット横 (mm)</span><input type="number" class="calc-input" id="pal-pd" placeholder="1100" style="width:100px;"></div>
+        </div>
+        <div class="calc-field"><span class="calc-label">箱 長さ (mm)</span><input type="number" class="calc-input" id="pal-l" placeholder="400" min="0"></div>
+        <div class="calc-field"><span class="calc-label">箱 幅 (mm)</span><input type="number" class="calc-input" id="pal-w" placeholder="300" min="0"></div>
+        <div class="calc-field"><span class="calc-label">箱 高さ (mm)</span><input type="number" class="calc-input" id="pal-h" placeholder="250" min="0"></div>
+        <div class="calc-field"><span class="calc-label">積み段数</span><input type="number" class="calc-input" id="pal-layers" value="5" min="1" style="width:70px;"></div>
+        <div class="calc-field"><span class="calc-label">総個数（任意）</span><input type="number" class="calc-input" id="pal-total" placeholder="100" min="1" style="width:90px;"></div>
+        <button class="btn-primary" onclick="calcPalletize()">計算 →</button>
+        <button class="btn-clear" onclick="clearCalcResult('pal-result')">クリア</button>
+      </div>
+      <div id="pal-result" class="calc-result" style="display:none;"></div>
+    </div>
+
+    <!-- 5. バンニングシミュレーション -->
+    <div class="card">
+      <div class="section-title">🚢 バンニングシミュレーション</div>
+      <p class="calc-desc">貨物の物量から3種類のコンテナを比較し、最適なサイズを提案します（理論値）。</p>
+      <div class="lookup-form" style="align-items:flex-end;">
+        <div class="calc-field"><span class="calc-label">貨物 長さ (cm)</span><input type="number" class="calc-input" id="van-l" placeholder="60" min="0"></div>
+        <div class="calc-field"><span class="calc-label">貨物 幅 (cm)</span><input type="number" class="calc-input" id="van-w" placeholder="40" min="0"></div>
+        <div class="calc-field"><span class="calc-label">貨物 高さ (cm)</span><input type="number" class="calc-input" id="van-h" placeholder="30" min="0"></div>
+        <div class="calc-field"><span class="calc-label">1個の重量 (kg)</span><input type="number" class="calc-input" id="van-weight" placeholder="10" min="0"></div>
+        <div class="calc-field"><span class="calc-label">総個数</span><input type="number" class="calc-input" id="van-qty" placeholder="100" min="1" style="width:90px;"></div>
+        <div class="calc-field" style="align-self:flex-end;padding-bottom:2px;">
+          <label style="display:flex;align-items:center;gap:6px;font-size:13px;color:var(--text);cursor:pointer;white-space:nowrap;">
+            <input type="checkbox" id="van-no-stack" style="width:16px;height:16px;cursor:pointer;accent-color:var(--accent);">
+            段積み不可
+          </label>
+        </div>
+        <button class="btn-primary" onclick="calcVanning()">計算 →</button>
+        <button class="btn-clear" onclick="clearCalcResult('van-result')">クリア</button>
+      </div>
+      <div id="van-result" class="calc-result" style="display:none;"></div>
+    </div>
+
+
+  <div class="feedback-footer">
+    <div class="feedback-footer-title">💬 このタブへのフィードバック・改善要望</div>
+    <textarea class="feedback-textarea" id="fb-calc" placeholder="ご意見・改善要望・追加してほしい機能などをお書きください"></textarea>
+    <div class="feedback-actions">
+      <button class="btn-primary" style="padding:8px 18px;font-size:13px;" onclick="sendFeedback('計算（サイズ関連）', 'fb-calc')">送信</button>
+      <span class="feedback-status" id="fb-calc-status"></span>
+    </div>
+  </div>
+  </div><!-- /tab-calc -->
+
+  <!-- ===================== Tab: レート換算 ===================== -->
+  <div class="tab-content" id="tab-rate">
+
+    <div class="card">
+      <div class="section-title">💱 通貨レート換算</div>
+      <p class="calc-desc">
+        リアルタイムレート（open.er-api.com）を使用します。ページを開いた後、初回換算時に自動取得します。<br>
+        <span style="font-size:11px;">
+          📋 税関公示レート（輸出入申告用・月次）は
+          <a href="https://www.customs.go.jp/tetsuzuki/kawase/index.htm"
+             target="_blank" style="color:#2b6cb0;font-weight:600;">税関ホームページ ↗</a> でご確認ください。
+        </span>
+      </p>
+
+      <div class="lookup-form" style="align-items:flex-end;">
+        <div class="calc-field"><span class="calc-label">基準通貨</span>
+          <select id="rate-from" style="padding:10px 13px;border:1.5px solid #e2e8f0;border-radius:8px;font-size:13px;background:#f8fafc;min-width:190px;">
+            <option value="JPY">🇯🇵 JPY　日本円</option>
+            <option value="USD">🇺🇸 USD　米ドル</option>
+            <option value="EUR">🇪🇺 EUR　ユーロ</option>
+            <option value="GBP">🇬🇧 GBP　英ポンド</option>
+            <option value="CNY">🇨🇳 CNY　中国人民元</option>
+            <option value="HKD">🇭🇰 HKD　香港ドル</option>
+            <option value="SGD">🇸🇬 SGD　シンガポールドル</option>
+            <option value="KRW">🇰🇷 KRW　韓国ウォン</option>
+            <option value="THB">🇹🇭 THB　タイバーツ</option>
+          </select>
+        </div>
+        <div class="calc-field"><span class="calc-label">金額</span>
+          <input type="number" class="calc-input" id="rate-amount" placeholder="10000" min="0" style="width:120px;">
+        </div>
+        <button class="btn-primary" onclick="calcRate()">換算 →</button>
+        <button class="btn-clear" onclick="clearCalcResult('rate-result')">クリア</button>
+      </div>
+
+      <div id="rate-status" style="font-size:12px;color:#718096;margin-top:10px;min-height:18px;"></div>
+      <div id="rate-result" class="calc-result" style="display:none;"></div>
+    </div>
+
+
+    <!-- 保険料計算 -->
+    <div class="card" style="margin-top:16px;">
+      <div class="section-title">🛡️ 保険料計算（海上貨物保険）</div>
+      <p class="calc-desc">
+        保険価額 ＝（FOB ＋ 運賃）× 1.10（慣行上 CIF の 10% 上乗せ）<br>
+        保険料 ＝ 保険価額 × 保険料率
+      </p>
+      <div class="lookup-form" style="flex-wrap:wrap;gap:10px;align-items:flex-end;">
+        <div class="calc-field"><span class="calc-label">FOB金額（円）</span>
+          <input type="number" class="calc-input" id="ins-fob" placeholder="1000000" min="0" style="width:130px;">
+        </div>
+        <div class="calc-field"><span class="calc-label">運賃（円）</span>
+          <input type="number" class="calc-input" id="ins-freight" placeholder="50000" min="0" style="width:130px;">
+        </div>
+        <div class="calc-field"><span class="calc-label">保険料率（%）</span>
+          <input type="number" class="calc-input" id="ins-rate" value="0.3" step="0.01" min="0" style="width:90px;">
+        </div>
+        <button class="btn-primary" onclick="calcInsurance()">計算 →</button>
+        <button class="btn-clear" onclick="clearCalcResult('ins-result')">クリア</button>
+      </div>
+      <div id="ins-result" class="calc-result" style="display:none;"></div>
+    </div>
+
+    <!-- 関税・消費税計算 -->
+    <div class="card" style="margin-top:16px;">
+      <div class="section-title">🏛️ 関税・消費税計算（輸入）</div>
+      <p class="calc-desc">
+        課税価格（CIF建て円換算）をもとに関税・消費税・地方消費税を試算します。<br>
+        <span style="font-size:11px;">
+          📋 HSコード別の関税率は
+          <a href="https://www.kanzei.or.jp/statistical/tariff/top/index/j/" target="_blank" style="color:#2b6cb0;font-weight:600;">
+            実行関税率表（税関） ↗</a> で確認してください。
+        </span>
+      </p>
+      <div class="lookup-form" style="flex-wrap:wrap;gap:10px;align-items:flex-end;">
+        <div class="calc-field"><span class="calc-label">課税価格（円・CIF建て）</span>
+          <input type="number" class="calc-input" id="duty-cif" placeholder="500000" min="0" style="width:150px;">
+        </div>
+        <div class="calc-field"><span class="calc-label">HSコード（参考）</span>
+          <input type="text" class="calc-input" id="duty-hs" placeholder="例: 8471.30" style="width:120px;">
+        </div>
+        <div class="calc-field"><span class="calc-label">関税率（%）</span>
+          <input type="number" class="calc-input" id="duty-rate" placeholder="0" step="0.1" min="0" style="width:90px;">
+        </div>
+        <div class="calc-field"><span class="calc-label">追加関税率（%）</span>
+          <input type="number" class="calc-input" id="duty-extra" value="0" step="0.1" min="0" style="width:90px;">
+          <span style="font-size:11px;color:#718096;margin-top:3px;">※対中制裁等</span>
+        </div>
+        <button class="btn-primary" onclick="calcDuty()">計算 →</button>
+        <button class="btn-clear" onclick="clearCalcResult('duty-result')">クリア</button>
+      </div>
+      <p style="font-size:11px;color:#718096;margin:8px 0 0 0;">
+        ⚠️ 試算値です。実際の税額は品目・原産地・適用協定等により異なります。輸入申告は通関士にご相談ください。
+      </p>
+      <div id="duty-result" class="calc-result" style="display:none;"></div>
+    </div>
+
+  <div class="feedback-footer">
+    <div class="feedback-footer-title">💬 このタブへのフィードバック・改善要望</div>
+    <textarea class="feedback-textarea" id="fb-rate" placeholder="ご意見・改善要望・追加してほしい機能などをお書きください"></textarea>
+    <div class="feedback-actions">
+      <button class="btn-primary" style="padding:8px 18px;font-size:13px;" onclick="sendFeedback('計算（お金関連）', 'fb-rate')">送信</button>
+      <span class="feedback-status" id="fb-rate-status"></span>
+    </div>
+  </div>
+  </div><!-- /tab-rate -->
+
+  <!-- Footer -->
+  <div class="footer">
+    <span class="footer-text">フォワーディング知識・用語集はこちら →</span>
+    <a class="footer-link"
+       href="https://www.notion.so/32672d90504a8010a5dfc8ff1b0519c8"
+       target="_blank">
+      🚢 コンテナの片隅で ↗
+    </a>
+  </div>
+
+</div><!-- /app -->
+
+<script>
+// ================================================================
+//  CARRIERS マスターデータ
+//  URLが判明したら null → アロー関数 に書き換えてください
+//  例) vessel: n => `https://example.com/vessel?name=${n}`
+// ================================================================
+const CARRIERS = {
+  'Maersk': {
+    icon: '🔵', cls: 'Maersk', domain: 'maersk.com',
+    trackingVerified: true,
+    top:       'https://www.maersk.com',
+    tracking:  n => `https://www.maersk.com/tracking/${n}`,
+    vessel:    () => 'https://www.maersk.com/schedules/vesselSchedules',
+    schedule:  null,  // 🚧 航路検索 (pol, pod) => URL 未登録
+    surchargeImportNote: 'ログイン→Maersk Spotで調べるのが確実',
+    surchargeImport: () => 'https://accounts.maersk.com/ocean-maeu/auth/login?nonce=hMg6LVGv6HFbyUx4SxG6&scope=openid%20profile%20email&client_id=portaluser&redirect_uri=https%3A%2F%2Fwww.maersk.com%2Fportaluser%2Foidc%2Fcallback&response_type=code&code_challenge=Qg3hKBD_xC2FjAB_SaUXlu1PqP0Yo-qu4rlBjFMZdF4',
+    surchargeExport: null, surchargeOther: null,  // 🚧 サーチャージページ () => URL 未登録
+    freetime:  null,  // 🚧 フリータイム検索 n => URL 未登録
+    bl:  { url: null, steps: [] },  // 🚧 BL発行依頼: url=手順書URL, steps=['手順1','手順2',...]
+    do_: { url: null, steps: [] },  // 🚧 DO発行依頼
+    blrules: null,                  // 🚧 BL記載事項URL 未登録
+    cycut:   'https://vessel-schedule-service.com/maersk/vessel-schedule?tab=3&information_detail_id=56',
+    cycutNote: null,
+    routePage:  'https://www.maersk.com/ja-jp/local-information/asia-pacific/japan/routes',
+  },
+  'MSC': {
+    icon: '🟠', cls: 'MSC', domain: 'msc.com',
+    trackingClipboard: true,
+    top:       'https://www.msc.com',
+    tracking:  n => `https://www.msc.com/en/track-a-shipment?agencyPath=mwi&searchInfo=${n}`,
+    vessel:    () => 'https://www.msc.com/en/search-a-schedule',
+    schedule:  null,
+    surchargeImportNote: 'リンク先の下部、「myMSCユーザーガイド/よくあるお問い合わせ」に情報あり',
+    surchargeImport: () => 'https://www.msc.com/ja/local-information/asia-pacific/japan#ローカル情報', surchargeExport: null, surchargeOther: null,
+    freetime:  null,
+    bl:  { url: null, steps: [] },
+    do_: { url: null, steps: [] },
+    blrules: null,
+    cycut:   'https://www.msc.com/ja/local-information/asia-pacific/japan',
+    cycutNote: '⚠️ 更新日が古い場合あり',
+    routePage:  'https://www.msc.com/ja/solutions/our-trade-services/east-west-network',
+  },
+  'CMA CGM': {
+    icon: '🟣', cls: 'CMACGM', domain: 'cma-cgm.com',
+    trackingClipboard: true,
+    top:       'https://www.cma-cgm.com',
+    tracking:  n => `https://www.cma-cgm.com/ebusiness/tracking/search?reference=${n}`,
+    vessel:    () => 'https://www.cma-cgm.com/ebusiness/schedules/voyage',
+    schedule:  null,
+    surchargeImport: () => 'https://www.cma-cgm.com/local/japan-agencies/tariffs-local-charges/', surchargeExport: null, surchargeOther: null,
+    freetime:  null,
+    bl:  { url: null, steps: [] },
+    do_: { url: null, steps: [] },
+    blrules: null,
+    cycut:   'https://www.toyoshingo.com/cmacgm/',
+    cycutNote: '東洋信号経由・各本船情報内にCY OPEN/CUTリンクあり',
+    routePage:  'https://www.cma-cgm.com/local/japan-agencies/local-services',
+  },
+  'Evergreen': {
+    icon: '🟢', cls: 'Evergreen', domain: 'evergreen-line.com',
+    trackingClipboard: true,
+    top:       'https://www.evergreen-line.com',
+    tracking:  () => 'https://ct.shipmentlink.com/servlet/TDB1_CargoTracking.do',
+    vessel:    () => 'https://ss.shipmentlink.com/tvs2/jsp/TVS2_VesselSchedule.jsp',
+    schedule:  null,
+    surchargeImportNote: 'ログイン必須',
+    surchargeImport: () => 'https://www.shipmentlink.com/jp/tuf1/jsp/TUF1_GetLocalCharges.jsp?tradeMode=IMP', surchargeExport: null, surchargeOther: null,
+    freetime:  null,
+    bl:  { url: null, steps: [] },
+    do_: { url: null, steps: [] },
+    blrules: null,
+    cycut:   'https://www.shipmentlink.com/jp/texp/jsp/TEXP_ExportCutOffIssue.jsp',
+    cycutNote: null,
+    routePage:  'https://www.evergreen-line.com/serviceroutes/jsp/RUT_ServiceRoutes.jsp',
+  },
+  'ONE': {
+    icon: '🔴', cls: 'ONE', domain: 'one-line.com',
+    trackingVerified: true,
+    top:       'https://www.one-line.com',
+    tracking:  n => `https://ecomm.one-line.com/one-ecom/manage-shipment/cargo-tracking?trakNoParam=${n}`,
+    vessel:    () => 'https://ecomm.one-line.com/one-ecom/schedule/vessel-schedule',
+    schedule:  null,
+    surchargeImport: () => 'https://jp.one-line.com/ja/surcharge-list-import', surchargeExport: null, surchargeOther: null,
+    freetime:  null,
+    bl:  { url: null, steps: [] },
+    do_: { url: null, steps: [] },
+    blrules: null,
+    cycut:   'https://jp.one-line.com/ja/schedule-cyopencut',
+    cycutNote: null,
+    routePage:  'https://jp.one-line.com/ja/service-maps',
+  },
+  'Hapag-Lloyd': {
+    icon: '🟡', cls: 'HapagLloyd', domain: 'hapag-lloyd.com',
+    trackingVerified: true,
+    top:       'https://www.hapag-lloyd.com',
+    tracking:  n => `https://www.hapag-lloyd.com/en/online-business/track/track-by-container-solution.html?container=${n}`,
+    vessel:    () => 'https://www.hapag-lloyd.com/en/online-business/track/vessel-tracker-solution.html',
+    schedule:  null,
+    surchargeImport: () => 'https://www.hapag-lloyd.com/en/services-information/offices-localinfo/east-asia/japan/local-info/import.html', surchargeExport: () => 'https://www.hapag-lloyd.com/en/services-information/offices-localinfo/east-asia/japan/local-info/export.html', surchargeOther: null,
+    freetime:  null,
+    bl:  { url: 'https://www.hapag-lloyd.com/en/services-information/offices-localinfo/east-asia/japan/local-info/export.html', steps: [] },
+    do_: { url: 'https://www.hapag-lloyd.com/en/services-information/offices-localinfo/east-asia/japan/local-info/import.html', steps: [] },
+    blrules: null,
+    cycut:   'https://www.hapag-lloyd.com/en/services-information/offices-localinfo/east-asia/japan/local-info/export.html',
+    cycutNote: null,
+    routePage:  'https://www.hapag-lloyd.com/en/services-information/routes-trades/gemini-cogh/route-finder.html',
+  },
+  'Yang Ming': {
+    icon: '🩷', cls: 'YangMing', domain: 'yangming.com',
+    trackingClipboard: true,
+    top:       'https://www.yangming.com',
+    tracking:  () => 'https://www.yangming.com/en/esolution/cargo_tracking',
+    vessel:    () => 'https://www.yangming.com/en/esolution/schedule/vessel_schedule',
+    schedule:  null,
+    surchargeImport: () => 'https://e-solution.yangming.com/LocalSite/Local_News_Info_Rwd_Country.aspx?funcDTL_Key=558&func=&localver=JP', surchargeExport: null, surchargeOther: null,
+    freetime:  null,
+    bl:  { url: null, steps: [] },
+    do_: { url: null, steps: [] },
+    blrules: null,
+    cycut:   'https://e-solution.yangming.com/LocalSite/Local_News_Info_Rwd_Country.aspx?funcDTL_Key=633&func=&localver=JP',
+    cycutNote: null,
+    routePage:  'https://www.yangming.com/en/service/service_overview/route_map?service=NCT',
+  },
+  'PIL': {
+    icon: '⚪', cls: 'PIL', domain: 'pilship.com',
+    trackingClipboard: true,
+    top:       'https://www.pilship.com',
+    tracking:  () => 'https://www.pilship.com/#asmTrack',
+    vessel:    null,  // 該当ページなし
+    schedule:  null,
+    surchargeImport: null, surchargeExport: null, surchargeOther: null,
+    freetime:  null,
+    bl:  { url: null, steps: [] },
+    do_: { url: null, steps: [] },
+    blrules: null,
+    cycut:   'https://pilines.jp/guide/cy-terminal',
+    cycutNote: null,
+    routePage:  'https://pilines.jp/schedule',
+  },
+  'Wan Hai': {
+    icon: '🟤', cls: 'WanHai', domain: 'wanhai.com',
+    trackingClipboard: true,
+    top:       'https://www.wanhai.com',
+    tracking:  n => `https://www.wanhai.com/views/EbsMenu.xhtml`,
+    vessel:    () => 'https://www.wanhai.com/views/skd/SkdByVsl.xhtml?file_num=64794',
+    schedule:  null,
+    surchargeImport: null, surchargeExport: null, surchargeOther: null,
+    freetime:  null,
+    bl:  { url: null, steps: [] },
+    do_: { url: null, steps: [] },
+    blrules: null,
+    cycut:   'https://jp.wanhai.com/views/content/ContentList.xhtml?file_num=76759',
+    cycutNote: null,
+    routePage:  'https://jp.wanhai.com/views/skd/SkdBySvc.xhtml?file_num=64836&parent_id=64834&top_file_num=64735',
+  },
+  'OOCL': {
+    icon: '🔵', cls: 'OOCL', domain: 'oocl.com',
+    trackingClipboard: true,
+    top:       'https://www.oocl.com',
+    tracking:  n => `https://www.oocl.com/eng/ourservices/eservices/cargotracking/Pages/cargotracking.aspx?containerNo=${n}`,
+    vessel:    () => 'https://www.oocl.com/eng/ourservices/eservices/trackandtrace/Pages/default.aspx',
+    schedule:  null,
+    surchargeImport: null, surchargeExport: null, surchargeOther: null,
+    freetime:  null,
+    bl:  { url: null, steps: [] },
+    do_: { url: null, steps: [] },
+    blrules: null,
+    cycut:   'https://www.oocl.com/japan/jpn/localinformation/terminalsandfacilities/Pages/default.aspx?print=true&ooclite=true',
+    cycutNote: null,
+    routePage:  'https://www.oocl.com/japan/jpn/localinformation/serviceprofile/Pages/default_serviceprofile2.aspx',
+  },
+  'COSCO': {
+    icon: '🔴', cls: 'COSCO', domain: 'coscoshipping.com',
+    trackingClipboard: true,
+    top:       'https://www.coscoshipping.com',
+    tracking:  () => 'https://elines.coscoshipping.com/ebusiness/cargotracking',
+    vessel:    () => 'https://elines.coscoshipping.com/ebusiness/sailingSchedule/searchByVesselName',
+    schedule:  null,
+    surchargeImport: null, surchargeExport: null, surchargeOther: null,
+    freetime:  null,
+    bl:  { url: null, steps: [] },
+    do_: { url: null, steps: [] },
+    blrules: null,
+    cycut:   'https://world.lines.coscoshipping.com/japan/jp/services/CYOPENCUT/1/1',
+    cycutNote: null,
+    routePage:  'https://world.lines.coscoshipping.com/japan/jp/services/localschedule/1/1',
+  },
+  'ZIM': {
+    icon: '🟠', cls: 'ZIM', domain: 'zim.com',
+    trackingClipboard: true,
+    top:       'https://www.zim.com',
+    tracking:  n => `https://www.zim.com/tools/track-a-shipment?consnumber=${n}`,
+    vessel:    () => 'https://www.zim.com/schedules/schedule-by-vessel',
+    schedule:  null,
+    surchargeImport: null, surchargeExport: null, surchargeOther: null,
+    freetime:  null,
+    bl:  { url: null, steps: [] },
+    do_: { url: null, steps: [] },
+    blrules: null,
+    cycut:   'https://www.zim.com/global-network/asia-oceania/japan/japan-schedules',
+    cycutNote: '⚠️ 直接ページ不明・情報求む',
+    routePage:  'https://www.zim.com/schedules/schedule-by-line?mobile=true',
+  },
+  'IAL': {
+    icon: '🔹', cls: 'IAL', domain: 'interasia.cc',
+    trackingClipboard: true,
+    top:       'https://www.interasia.cc',
+    tracking:  () => 'https://www.interasia.cc/Service/Form?servicetype=0',
+    vessel:    () => 'https://www.interasia.cc/Service/Form?servicetype=1', schedule: null, surchargeImport: null, surchargeExport: null, surchargeOther: null, freetime: null,
+    bl: { url: null, steps: [] }, do_: { url: null, steps: [] }, blrules: null,
+    cycut:   'https://www.interasia.cc/Resource/Port',
+    cycutNote: null,
+    routePage:  'https://www.interasia.cc/Resource/Router',
+  },
+  'SITC': {
+    icon: '🟣', cls: 'SITC', domain: 'sitcline.com',
+    trackingClipboard: true,
+    top:       'https://ebusiness.sitcline.com',
+    tracking:  () => 'https://ebusiness.sitcline.com/#/topMenu/cargoTrack',
+    vessel: () => 'https://ebusiness.sitcline.com/#/topMenu/vesselMovementSearch', schedule: null, surchargeImport: null, surchargeExport: null, surchargeOther: null, freetime: null,
+    bl: { url: null, steps: [] }, do_: { url: null, steps: [] }, blrules: null,
+    cycut:   'https://sitc.co.jp/terminal',
+    cycutNote: null,
+    routePage:  'https://sitc.co.jp/route',
+  },
+  'HMM': {
+    icon: '🔴', cls: 'HMM', domain: 'hmm21.com',
+    trackingClipboard: true,
+    top:       'https://www.hmm21.com',
+    tracking:  () => 'https://www.hmm21.com/e-service/general/trackNTrace/TrackNTrace.do',
+    vessel: () => 'https://www.hmm21.com/e-service/general/schedule/ScheduleMain.do', schedule: null, surchargeImport: null, surchargeExport: null, surchargeOther: null, freetime: null,
+    bl: { url: null, steps: [] }, do_: { url: null, steps: [] }, blrules: null,
+    cycut:   'https://www.hmm21.com/data_files/local/schedule/201023172631.pdf',
+    cycutNote: '⚠️ PDF・正確な場所不明・更新要注意',
+    routePage:  'https://www.hmm21.com/e-service/general/schedule/serviceNetwork/serviceNetworkCustomizedMain.do?siteTp=C',
+  },
+  'TSL': {
+    icon: '🟢', cls: 'TSL', domain: 'tslines.com',
+    trackingClipboard: true,
+    top:       'https://www.tslines.com',
+    tracking:  () => 'https://www.tslines.com/en/tracking',
+    vessel: () => 'https://www.tslines.com/jp/arrivaldate?nowmenu=Search%20By%20Vessel%20Voyage', schedule: null, surchargeImport: null, surchargeExport: null, surchargeOther: null, freetime: null,
+    bl: { url: null, steps: [] }, do_: { url: null, steps: [] }, blrules: null,
+    cycut:   'https://tsljp.sharepoint.com/:b:/r/sites/Operation/Shared%20Documents/File%20for%20UPDATE/CYOPEN.pdf?csf=1&web=1&e=lDHshN',
+    cycutNote: null,
+    routePage:  'https://www.tslines.com/jp/sailingservice?reglon=Japan_Korea&sailing=JTK',
+  },
+  'KMTC': {
+    icon: '🟡', cls: 'KMTC', domain: 'ekmtc.com',
+    trackingClipboard: true,
+    top:       'https://www.ekmtc.com',
+    tracking:  () => 'https://www.ekmtc.com/index.html#/cargo-tracking',
+    vessel: () => 'https://www.ekmtc.com/index.html#/schedule/vessel', schedule: null, surchargeImport: null, surchargeExport: null, surchargeOther: null, freetime: null,
+    bl: { url: null, steps: [] }, do_: { url: null, steps: [] }, blrules: null,
+    cycut:   null,
+    cycutNote: '🔍 調査中',
+    routePage:  'http://www.kmtcjapan.com/home/kouro_annai02.asp',
+  },
+};
+
+// ================================================================
+//  外部ポータル（本船動静）
+//  url に実際のURLを入れると「開く」ボタンが表示されます
+// ================================================================
+const VESSEL_PORTALS = [
+  {
+    name: '東洋信号通信社',
+    desc: '国内本船入出港情報・動静',
+    note: '各船会社ページが残るが、移行済み船会社はVSSへ誘導される',
+    url: 'https://www.toyoshingo.com/',
+  },
+  {
+    name: 'VSS (Vessel Schedule Service)',
+    desc: '国内本船スケジュール（東洋信号の新プラットフォーム）',
+    note: '移行済み: SITC / Maersk / MSC / ONE / OOCL',
+    url: 'https://vessel-schedule-service.com/',
+  },
+  // 必要に応じてオブジェクトを追加してください
+];
+
+// ================================================================
+//  共通ユーティリティ
+// ================================================================
+
+// クリップボードコピー＆ページ遷移
+function copyToClipboard(text) {
+  try {
+    navigator.clipboard.writeText(text);
+  } catch(e) {
+    const ta = document.createElement('textarea');
+    ta.value = text; ta.style.position='fixed'; ta.style.opacity='0';
+    document.body.appendChild(ta); ta.focus(); ta.select();
+    document.execCommand('copy'); document.body.removeChild(ta);
+  }
+}
+
+function showToast(msg) {
+  const t = document.getElementById('clipboard-toast');
+  if (msg) t.textContent = msg;
+  t.classList.add('show');
+  clearTimeout(t._timer);
+  t._timer = setTimeout(() => t.classList.remove('show'), 3000);
+}
+
+// タブ切り替え
+function switchCategory(cat, btn) {
+  // カテゴリーボタンのアクティブ切替
+  document.querySelectorAll('.cat-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  // サブナビの表示切替
+  document.querySelectorAll('.sub-nav').forEach(s => s.classList.remove('active'));
+  document.getElementById('sub-' + cat).classList.add('active');
+  // カテゴリー最初のタブへ自動切替
+  const firstBtn = document.querySelector('#sub-' + cat + ' .tab-btn');
+  if (firstBtn) firstBtn.click();
+}
+
+function switchTab(tabId, btn) {
+  document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
+  document.querySelectorAll('.tab-btn').forEach(el => el.classList.remove('active'));
+  document.getElementById('tab-' + tabId).classList.add('active');
+  btn.classList.add('active');
+}
+
+// セレクトボックスを船会社リストで初期化
+function populateSelect(id) {
+  const sel = document.getElementById(id);
+  if (!sel) return;
+  sel.innerHTML = '<option value="">— 船会社を選択 —</option>' +
+    Object.keys(CARRIERS).map(n => `<option value="${n}">${n}</option>`).join('');
+}
+
+// result-box に URL をセット
+function showResult(boxId, urlId, linkId, url) {
+  document.getElementById(urlId).textContent = url;
+  document.getElementById(linkId).href = url;
+  document.getElementById(boxId).classList.add('show');
+}
+
+// URL未登録時のフォールバック
+function openTopFallback(carrier, featureName) {
+  alert(`${carrier} の${featureName}URLは未登録です。\nトップページを開きます。`);
+  window.open(CARRIERS[carrier].top, '_blank');
+}
+
+// ================================================================
+//  Tab 1: コンテナ追跡
+// ================================================================
+document.getElementById('ql-carrier').addEventListener('change', updateQL);
+document.getElementById('ql-number').addEventListener('input', updateQL);
+document.getElementById('ql-number').addEventListener('keydown', e => { if (e.key === 'Enter') quickLookup(); });
+
+function updateQL() {
+  const carrier = document.getElementById('ql-carrier').value;
+  const num     = document.getElementById('ql-number').value.trim();
+  if (carrier && num) {
+    const url = CARRIERS[carrier].tracking(encodeURIComponent(num));
+    showResult('ql-result', 'ql-url', 'ql-link', url);
+  } else {
+    document.getElementById('ql-result').classList.remove('show');
+  }
+}
+
+function quickLookup() {
+  const carrier = document.getElementById('ql-carrier').value;
+  const num     = document.getElementById('ql-number').value.trim();
+  if (!carrier) { alert('船会社を選択してください'); return; }
+  if (!num)     { alert('コンテナ番号またはB/L番号を入力してください'); return; }
+  const info = CARRIERS[carrier];
+  if (info.trackingDisabled) {
+    alert(carrier + ' のトラッキングURLは現在調査中です。しばらくお待ちください。');
+    return;
+  }
+  if (info.trackingClipboard) {
+    const relayUrl = 'relay.html?carrier=' + encodeURIComponent(carrier)
+      + '&num=' + encodeURIComponent(num)
+      + '&url=' + encodeURIComponent(info.tracking(num))
+      + '&icon=' + encodeURIComponent(info.icon);
+    window.open(relayUrl, '_blank');
+    return;
+  }
+  window.open(info.tracking(encodeURIComponent(num)), '_blank');
+}
+
+
+function buildCarrierGrid() {
+  const grid = document.getElementById('carrier-grid');
+  for (const [name, info] of Object.entries(CARRIERS)) {
+    const card = document.createElement('div');
+    let badge = '';
+    if (info.trackingVerified)  badge = '<div class="verified-badge">✅ 追跡確認済</div>';
+    if (info.trackingClipboard) badge = '<div class="clipboard-badge">📋 番号コピー→貼付</div>';
+    if (info.trackingDisabled)  badge = '<div class="disabled-badge">🚧 URL調査中</div>';
+    card.className = 'carrier-card' + (info.trackingDisabled ? ' tracking-disabled' : '');
+    card.innerHTML = `<div class="name">${name}</div><div class="domain">${info.domain}</div>${badge}`;
+    card.onclick = () => {
+      if (info.trackingDisabled) return;
+      const num = document.getElementById('ql-number').value.trim();
+      if (info.trackingClipboard) {
+        if (!num) { window.open(info.top, '_blank'); return; }
+        const relayUrl = 'relay.html?carrier=' + encodeURIComponent(name)
+          + '&num=' + encodeURIComponent(num)
+          + '&url=' + encodeURIComponent(info.tracking(num))
+          + '&icon=' + encodeURIComponent(info.icon);
+        window.open(relayUrl, '_blank');
+        return;
+      }
+      window.open(num ? info.tracking(encodeURIComponent(num)) : info.top, '_blank');
+    };
+    grid.appendChild(card);
+  }
+}
+
+// ================================================================
+//  Tab 2: 本船動静
+// ================================================================
+function buildVesselGrid() {
+  // 国内動静ポータル
+  const portalGrid = document.getElementById('vessel-portal-grid');
+  for (const p of VESSEL_PORTALS) {
+    const btn = document.createElement('a');
+    btn.href = p.url;
+    btn.target = '_blank';
+    btn.rel = 'noopener noreferrer';
+    btn.style.cssText = 'display:inline-flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;padding:14px 20px;background:#fff;border:1px solid #d9cfc2;border-radius:9px;text-decoration:none;color:#3d2e1e;font-weight:600;font-size:13px;min-width:160px;transition:background 0.15s;';
+    btn.onmouseover = () => { btn.style.background = '#f0e8d8'; btn.style.borderColor = '#6b5a42'; };
+    btn.onmouseout  = () => { btn.style.background = '#fff'; btn.style.borderColor = '#d9cfc2'; };
+    const noteHtml = p.note ? `<span style="font-size:11px;font-weight:400;color:#5a6e42;background:#eaedd8;border-radius:4px;padding:2px 6px;margin-top:2px;">${p.note}</span>` : '';
+    btn.innerHTML = `<span>${p.name}</span><span style="font-size:11px;font-weight:400;color:#7d6b56;">${p.desc}</span>${noteHtml}`;
+    portalGrid.appendChild(btn);
+  }
+
+  // 船会社別サービス航路グリッド
+  const routeCarrierGrid = document.getElementById('route-carrier-grid');
+  if (routeCarrierGrid) {
+    for (const [name, info] of Object.entries(CARRIERS)) {
+      const card = document.createElement('div');
+      const hasUrl = !!info.routePage;
+      let badge = '';
+      if (!hasUrl) badge = '<div class="disabled-badge">未登録</div>';
+      card.className = 'carrier-card' + (!hasUrl ? ' tracking-disabled' : '');
+      card.innerHTML = `<div class="name">${name}</div><div class="domain">${info.domain}</div>${badge}`;
+      if (hasUrl) card.onclick = () => window.open(info.routePage, '_blank');
+      routeCarrierGrid.appendChild(card);
+    }
+  }
+
+  // CY OPEN/CUTグリッド
+  const cycutGrid = document.getElementById('cycut-grid');
+  for (const [name, info] of Object.entries(CARRIERS)) {
+    const card = document.createElement('div');
+    const hasUrl = !!info.cycut;
+    let badge = '';
+    if (!hasUrl) badge = '<div class="disabled-badge">未登録</div>';
+    const noteInfo = info.cycutNote ? `<div style="font-size:10px;color:#744210;background:#fefcbf;border-radius:3px;padding:1px 5px;margin-top:3px;line-height:1.4;">${info.cycutNote}</div>` : '';
+    card.className = 'carrier-card' + (!hasUrl ? ' tracking-disabled' : '');
+    card.innerHTML = `<div class="name">${name}</div><div class="domain">${info.domain}</div>${noteInfo}${badge}`;
+    if (hasUrl) {
+      card.onclick = () => window.open(info.cycut, '_blank');
+    }
+    cycutGrid.appendChild(card);
+  }
+
+  // 船会社グリッド
+  const grid = document.getElementById('vessel-grid');
+  for (const [name, info] of Object.entries(CARRIERS)) {
+    const card = document.createElement('div');
+    const hasUrl = !!info.vessel;
+    let badge = '';
+    if (!hasUrl) badge = '<div class="disabled-badge">該当ページなし</div>';
+    card.className = 'carrier-card' + (!hasUrl ? ' tracking-disabled' : '');
+    card.innerHTML = `<div class="name">${name}</div><div class="domain">${info.domain}</div>${badge}`;
+    if (hasUrl) {
+      card.onclick = () => window.open(info.vessel(), '_blank');
+    }
+    grid.appendChild(card);
+  }
+}
+
+// ================================================================
+//  サービス航路: Notionから航路記事を取得して表示
+// ================================================================
+async function loadRouteArticles() {
+  const container = document.getElementById('route-articles');
+  if (!container) return;
+  try {
+    const res = await fetch('/.netlify/functions/routes');
+    if (!res.ok) throw new Error('fetch failed');
+    const pages = await res.json();
+    if (!Array.isArray(pages) || pages.length === 0) {
+      container.innerHTML = '<div style="color:var(--text-lt);font-size:13px;padding:8px 0;">航路記事はまだありません。</div>';
+      return;
+    }
+    container.innerHTML = pages.map(p => `
+      <a class="route-card" href="${p.publicUrl}" target="_blank" rel="noopener noreferrer">
+        <div class="route-card-title">🗺️ ${p.title}</div>
+        <div class="route-card-meta">${p.createdAt ? new Date(p.createdAt).toLocaleDateString('ja-JP') : ''}</div>
+      </a>
+    `).join('');
+  } catch (e) {
+    container.innerHTML = '<div style="color:#b04040;font-size:13px;padding:8px 0;">⚠️ 記事の読み込みに失敗しました。</div>';
+  }
+}
+
+// ================================================================
+//  Tab 3: 航路・運賃
+// ================================================================
+function schedLookup() {
+  const carrier = document.getElementById('sched-carrier').value;
+  const pol     = document.getElementById('sched-pol').value.trim();
+  const pod     = document.getElementById('sched-pod').value.trim();
+  if (!carrier) { alert('船会社を選択してください'); return; }
+  const fn = CARRIERS[carrier].schedule;
+  if (!fn) { openTopFallback(carrier, '航路検索'); return; }
+  const url = fn(encodeURIComponent(pol), encodeURIComponent(pod));
+  showResult('sched-result', 'sched-url', 'sched-link', url);
+  window.open(url, '_blank');
+}
+
+function buildSurchargeGrids() {
+  const defs = [
+    { id: 'surcharge-import-grid', key: 'surchargeImport', label: '輸入サーチャージ' },
+    { id: 'surcharge-export-grid', key: 'surchargeExport', label: '輸出サーチャージ' },
+    { id: 'surcharge-other-grid',  key: 'surchargeOther',  label: 'その他サーチャージ' },
+  ];
+  for (const def of defs) {
+    const grid = document.getElementById(def.id);
+    if (!grid) continue;
+    for (const [name, info] of Object.entries(CARRIERS)) {
+      const card = document.createElement('div');
+      const hasUrl = !!info[def.key];
+      let badge = '';
+      if (!hasUrl) badge = '<div class="disabled-badge">未登録</div>';
+      const noteKey = def.key + 'Note';
+      const noteInfo = info[noteKey] ? `<div style="font-size:10px;color:#744210;background:#fefcbf;border-radius:3px;padding:1px 5px;margin-top:3px;line-height:1.4;">${info[noteKey]}</div>` : '';
+      card.className = 'carrier-card' + (!hasUrl ? ' tracking-disabled' : '');
+      card.innerHTML = `<div class="name">${name}</div><div class="domain">${info.domain}</div>${noteInfo}${badge}`;
+      if (hasUrl) card.onclick = () => window.open(typeof info[def.key] === 'function' ? info[def.key]() : info[def.key], '_blank');
+      grid.appendChild(card);
+    }
+  }
+}
+
+
+// ================================================================
+//  Tab: インコタームズ
+// ================================================================
+const INCO_STAGES = [
+  { key: 'pack',      label: '輸出梱包・荷造り',          group: 'export' },
+  { key: 'exInland',  label: '国内陸送（工場→船積港）',    group: 'export' },
+  { key: 'exCustoms', label: '輸出通関',                  group: 'export' },
+  { key: 'loading',   label: '本船への積み込み',           group: 'export' },
+  { key: 'freight',   label: '海上/航空運賃の負担',        group: 'export' },
+  { key: 'insurance', label: '貨物保険の付保',            group: 'export' },
+  { key: 'imInland',  label: '国内陸送（港→納品先）',     group: 'import' },
+  { key: 'imCustoms', label: '輸入通関',                  group: 'import' },
+  { key: 'imDuty',    label: '輸入関税・消費税の負担',     group: 'import' },
+];
+//  seller配列: [梱包, 国内陸↑, 輸出通関, 本船積込, 運賃, 保険, 国内陸↓, 輸入通関, 関税]
+//  1=売り手担当, 0=買い手担当
+const INCO_DATA = [
+  { code:'EXW', name:'Ex Works',                       mode:'all', seller:[1,0,0,0,0,0,0,0,0], note:'売り手の負担が最も少ない条件。工場渡し。' },
+  { code:'FCA', name:'Free Carrier',                   mode:'all', seller:[1,1,1,0,0,0,0,0,0], note:'指定場所・指定運送人渡し。複合輸送に対応。' },
+  { code:'FAS', name:'Free Alongside Ship',            mode:'sea', seller:[1,1,1,0,0,0,0,0,0], note:'船積港の本船船側渡し。海上・内水路輸送専用。' },
+  { code:'FOB', name:'Free On Board',                  mode:'sea', seller:[1,1,1,1,0,0,0,0,0], note:'本船甲板渡し。リスクは本船積込時に移転。' },
+  { code:'CFR', name:'Cost and Freight',               mode:'sea', seller:[1,1,1,1,1,0,0,0,0], note:'運賃込み。保険は買い手。海上輸送専用。' },
+  { code:'CIF', name:'Cost, Insurance and Freight',    mode:'sea', seller:[1,1,1,1,1,1,0,0,0], note:'運賃・保険料込み。海上輸送専用。日本の貿易で最多。' },
+  { code:'CPT', name:'Carriage Paid To',               mode:'all', seller:[1,1,1,1,1,0,0,0,0], note:'運賃込み（CFRの複合輸送版）。保険は買い手。' },
+  { code:'CIP', name:'Carriage and Insurance Paid To', mode:'all', seller:[1,1,1,1,1,1,0,0,0], note:'運賃・保険料込み（CIFの複合輸送版）。' },
+  { code:'DAP', name:'Delivered at Place',             mode:'all', seller:[1,1,1,1,1,0,1,0,0], note:'仕向地持込渡し。輸入通関・関税は買い手。' },
+  { code:'DPU', name:'Delivered at Place Unloaded',    mode:'all', seller:[1,1,1,1,1,0,1,0,0], note:'仕向地荷卸込渡し（荷卸しも売り手負担）。' },
+  { code:'DDP', name:'Delivered Duty Paid',            mode:'all', seller:[1,1,1,1,1,0,1,1,1], note:'売り手の負担が最も多い条件。関税・通関も売り手。' },
+];
+
+function buildIncotermsTab() {
+  // ステージボタン生成
+  ['export','import'].forEach(group => {
+    const container = document.getElementById('inco-stages-' + group);
+    INCO_STAGES.filter(s => s.group === group).forEach(stage => {
+      const btn = document.createElement('button');
+      btn.className = 'inco-stage-btn';
+      btn.dataset.key = stage.key;
+      btn.textContent = stage.label;
+      btn.onclick = () => btn.classList.toggle('selected');
+      container.appendChild(btn);
+    });
+  });
+
+  // 一覧表生成
+  const table = document.getElementById('inco-table');
+  const stageLabels = ['梱包','陸送↑','輸出通関','本船積込','運賃','保険','陸送↓','輸入通関','関税'];
+  const stageGroups = ['ex','ex','ex','ex','ex','ex','im','im','im'];
+
+  // ヘッダー
+  const thead = table.createTHead();
+  const tr1 = thead.insertRow();
+  [
+    { text:'条件', span:1, cls:'' },
+    { text:'正式名称', span:1, cls:'' },
+    { text:'← 輸出側の作業 →', span:6, cls:'stage-group-ex' },
+    { text:'← 輸入側の作業 →', span:3, cls:'stage-group-im' },
+    { text:'輸送', span:1, cls:'' },
+  ].forEach(h => {
+    const th = document.createElement('th');
+    th.textContent = h.text;
+    th.colSpan = h.span;
+    if (h.cls) th.className = h.cls;
+    tr1.appendChild(th);
+  });
+  const tr2 = thead.insertRow();
+  ['','', ...stageLabels, ''].forEach((lbl, i) => {
+    const th = document.createElement('th');
+    th.textContent = lbl;
+    if (i >= 2 && i <= 7) th.className = 'stage-group-ex';
+    if (i >= 8 && i <= 10) th.className = 'stage-group-im';
+    tr2.appendChild(th);
+  });
+
+  // データ行
+  const tbody = table.createTBody();
+  INCO_DATA.forEach(inc => {
+    const row = tbody.insertRow();
+    // 条件コード
+    const codeTd = row.insertCell(); codeTd.className = 'code-cell'; codeTd.textContent = inc.code;
+    // 正式名称
+    const nameTd = row.insertCell(); nameTd.className = 'name-cell'; nameTd.textContent = inc.name;
+    // 各ステージ
+    inc.seller.forEach(v => {
+      const td = row.insertCell();
+      td.className = v ? 'seller' : 'buyer';
+      td.textContent = v ? '売' : '買';
+    });
+    // 輸送モード
+    const modeTd = row.insertCell();
+    modeTd.className = 'mode-cell';
+    modeTd.innerHTML = inc.mode === 'sea'
+      ? '<span class="inco-mode-tag sea">海上のみ</span>'
+      : '<span class="inco-mode-tag all">全輸送</span>';
+  });
+}
+
+function judgeIncoterms() {
+  const selected = {};
+  document.querySelectorAll('.inco-stage-btn').forEach(btn => {
+    selected[btn.dataset.key] = btn.classList.contains('selected') ? 1 : 0;
+  });
+  const userVec = INCO_STAGES.map(s => selected[s.key]);
+
+  const matches = INCO_DATA.filter(inc =>
+    inc.seller.every((v, i) => v === userVec[i])
+  );
+
+  const resultDiv = document.getElementById('inco-result');
+  if (matches.length === 0) {
+    resultDiv.innerHTML = '<p style="color:var(--text-lt);font-size:13px;padding:10px 0;">一致するインコタームズが見つかりませんでした。<br>作業の組み合わせを確認してください。</p>';
+    return;
+  }
+
+  const cards = matches.map(inc => `
+    <div class="inco-result-card">
+      <div class="inco-result-code">${inc.code}</div>
+      <div class="inco-result-name">${inc.name}</div>
+      <div class="inco-result-note">${inc.note}</div>
+      <span class="inco-mode-tag ${inc.mode}">${inc.mode === 'sea' ? '海上輸送専用' : '全輸送モード対応'}</span>
+    </div>
+  `).join('');
+
+  resultDiv.innerHTML = `
+    <p style="font-size:12px;font-weight:700;color:var(--accent-dk);margin-bottom:8px;">
+      該当するインコタームズ（${matches.length}件）
+    </p>
+    <div class="inco-results-wrap">${cards}</div>
+  `;
+}
+
+function resetIncoterms() {
+  document.querySelectorAll('.inco-stage-btn').forEach(btn => btn.classList.remove('selected'));
+  document.getElementById('inco-result').innerHTML = '';
+}
+
+
+// ================================================================
+//  Tab 4: 書類（輸入申請 / 輸出申請）
+// ================================================================
+function buildBldoGrids() {
+  const defs = [
+    { id: 'bldo-import-grid', dataFn: info => info.do_, label: '輸入申請' },
+    { id: 'bldo-export-grid', dataFn: info => info.bl,  label: '輸出申請' },
+  ];
+  for (const def of defs) {
+    const grid = document.getElementById(def.id);
+    if (!grid) continue;
+    for (const [name, info] of Object.entries(CARRIERS)) {
+      const card = document.createElement('div');
+      const data = def.dataFn(info);
+      const hasUrl = !!(data && data.url);
+      let badge = '';
+      if (!hasUrl) badge = '<div class="disabled-badge">未登録</div>';
+      const noteInfo = (data && data.note) ? `<div style="font-size:10px;color:#744210;background:#fefcbf;border-radius:3px;padding:1px 5px;margin-top:3px;line-height:1.4;">${data.note}</div>` : '';
+      card.className = 'carrier-card' + (!hasUrl ? ' tracking-disabled' : '');
+      card.innerHTML = `<div class="name">${name}</div><div class="domain">${info.domain}</div>${noteInfo}${badge}`;
+      if (hasUrl) card.onclick = () => window.open(data.url, '_blank');
+      grid.appendChild(card);
+    }
+  }
+}
+
+// ================================================================
+//  Tab 4: BL/DO 手続き
+// ================================================================
+let currentProcType = 'bl';
+
+function setProcType(type) {
+  currentProcType = type;
+  document.getElementById('proc-bl-btn').classList.toggle('active', type === 'bl');
+  document.getElementById('proc-do-btn').classList.toggle('active', type === 'do');
+  document.getElementById('proc-result').innerHTML = '';
+  document.getElementById('proc-carrier').value = '';
+}
+
+function procLookup() {
+  const carrier = document.getElementById('proc-carrier').value;
+  if (!carrier) { alert('船会社を選択してください'); return; }
+
+  const data      = currentProcType === 'bl' ? CARRIERS[carrier].bl : CARRIERS[carrier].do_;
+  const typeLabel = currentProcType === 'bl' ? 'BL発行依頼' : 'DO発行依頼';
+  const hasUrl    = !!data.url;
+  const hasSteps  = data.steps && data.steps.length > 0;
+
+  const stepsHtml = hasSteps
+    ? `<ol class="guidance-steps">${data.steps.map(s => `<li>${s}</li>`).join('')}</ol>`
+    : `<p style="color:#a0aec0;font-size:13px;padding:8px 0;">📌 手順・ガイダンス未登録です。代理店または担当者に直接ご確認ください。</p>`;
+
+  document.getElementById('proc-result').innerHTML = `
+    <div class="guidance-card">
+      <div class="guidance-header">
+        <span class="guidance-title">${CARRIERS[carrier].icon} ${carrier} — ${typeLabel}</span>
+        ${hasUrl
+          ? `<span class="badge-ok">✅ 手順書あり</span>`
+          : `<span class="badge-na">⚠️ 案内ページ未登録</span>`}
+      </div>
+      ${hasUrl ? `<p style="margin-bottom:12px;"><a class="btn-open" href="${data.url}" target="_blank">手順書を開く ↗</a></p>` : ''}
+      ${stepsHtml}
+    </div>`;
+}
+
+// ================================================================
+//  Tab 5: BL記載事項
+// ================================================================
+function buildBlRulesGrid() {
+  const grid = document.getElementById('blrules-grid');
+  grid.innerHTML = Object.entries(CARRIERS).map(([name, info]) => `
+    <div class="blrules-card">
+      <div class="blrules-carrier">${name}</div>
+      ${info.blrules
+        ? `<a class="blrules-link" href="${info.blrules}" target="_blank">📄 案内ページ ↗</a>`
+        : `<span class="blrules-na">未登録</span>`}
+    </div>`).join('');
+}
+
+// ================================================================
+//  Tab 6: フリータイム
+// ================================================================
+function freetimeLookup() {
+  const carrier = document.getElementById('ft-carrier').value;
+  const num     = document.getElementById('ft-number').value.trim();
+  if (!carrier) { alert('船会社を選択してください'); return; }
+  if (!num)     { alert('コンテナ番号を入力してください'); return; }
+  const fn = CARRIERS[carrier].freetime;
+  if (!fn) { openTopFallback(carrier, 'フリータイム検索'); return; }
+  const url = fn(encodeURIComponent(num));
+  showResult('ft-result', 'ft-url', 'ft-link', url);
+  window.open(url, '_blank');
+}
+
+// ================================================================
+//  初期化
+// ================================================================
+['ql-carrier', 'sched-carrier',
+ 'surcharge-carrier', 'ft-carrier'].forEach(populateSelect);
+
+buildCarrierGrid();
+buildVesselGrid();
+buildSurchargeGrids();
+buildBldoGrids();
+buildIncotermsTab();
+loadRouteArticles();
+buildBlRulesGrid();
+
+// ================================================================
+//  Tab 7: 計算ツール
+// ================================================================
+
+  // ===== e-Booking URLs =====
+  const BOOKING_URLS = {
+    'Maersk':       { url: 'https://www.maersk.com/book', note: '🔐 要ログイン' },
+    'MSC':          { url: 'https://www.msc.com/en/book', note: '🔐 要ログイン' },
+    'CMA CGM':      { url: 'https://www.cma-cgm.com/ebusiness/booking', note: '🔐 要ログイン' },
+    'Evergreen':    { url: 'https://ebooking.evergreen-line.com/', note: '🔐 要ログイン' },
+    'ONE':          { url: 'https://ecomm.one-line.com/booking', note: '🔐 要ログイン' },
+    'Hapag-Lloyd':  { url: 'https://www.hapag-lloyd.com/en/online-business/booking.html', note: '🔐 要ログイン' },
+    'Yang Ming':    { url: 'https://www.yangming.com/e_service/booking_management/', note: '🔐 要ログイン' },
+    'Wan Hai':      { url: 'https://ebooking.wanhai.com/', note: '🔐 要ログイン' },
+    'OOCL':         { url: 'https://www.oocl.com/OOCL/', note: '🔐 要ログイン' },
+    'COSCO':        { url: 'https://elines.coscoshipping.com/ebusiness/booking', note: '🔐 要ログイン' },
+    'ZIM':          { url: 'https://www.zim.com/book', note: '🔐 要ログイン' },
+    'PIL':          { url: 'https://www.pilship.com/en/e-services/booking/booking-form', note: '🔐 要ログイン' },
+    'IAL':          { url: null, note: '⚠️ URL未確認' },
+    'SITC':         { url: 'https://ebooking.sitcline.com/', note: '🔐 要ログイン' },
+    'HMM':          { url: 'https://www.hmm21.com/cms/business/ebiz/booking/', note: '🔐 要ログイン' },
+    'TSL':          { url: null, note: '⚠️ URL未確認' },
+    'KMTC':         { url: 'https://www.kmtc.co.kr/e-service/booking', note: '⚠️ URL要確認' },
+  };
+
+  function buildBookingGrid() {
+    const grid = document.getElementById('booking-grid');
+    if (!grid) return;
+    Object.entries(BOOKING_URLS).forEach(([name, info]) => {
+      const carrier = CARRIERS[name] || {};
+      const hasUrl = !!info.url;
+      const card = document.createElement('div');
+      card.className = 'carrier-card' + (hasUrl ? '' : ' tracking-disabled');
+      card.innerHTML = '<div class="name">' + name + '</div>'
+        + '<div class="domain">' + (carrier.domain || '') + '</div>'
+        + '<div style="font-size:10px;color:' + (hasUrl ? 'var(--text-md)' : '#e53e3e') + ';margin-top:4px;">' + info.note + '</div>'
+        + (!hasUrl ? '<div class="disabled-badge">未登録</div>' : '');
+      if (hasUrl) card.onclick = () => window.open(info.url, '_blank');
+      grid.appendChild(card);
+    });
+  }
+  buildBookingGrid();
+
+function appendCalcResult(id, html, summary) {
+  const container = document.getElementById(id);
+  container.style.display = 'block';
+  const n = container.querySelectorAll('.calc-history-entry').length + 1;
+  const entry = document.createElement('div');
+  entry.className = 'calc-history-entry';
+  entry.innerHTML = `<div class="calc-history-header">
+      <span class="calc-history-num">#${n}</span>
+      <span class="calc-history-summary">${summary}</span>
+      <button class="calc-history-close" onclick="const e=this.closest('.calc-history-entry'),c=e.parentElement;e.remove();if(!c.querySelector('.calc-history-entry'))c.style.display='none'">×</button>
+    </div>${html}`;
+  container.insertBefore(entry, container.firstChild);
+}
+function clearCalcResult(id) {
+  const el = document.getElementById(id);
+  el.innerHTML = ''; el.style.display = 'none';
+}
+
+function calcAirCW() {
+  const l      = parseFloat(document.getElementById('air-l').value);
+  const w      = parseFloat(document.getElementById('air-w').value);
+  const h      = parseFloat(document.getElementById('air-h').value);
+  const weight = parseFloat(document.getElementById('air-weight').value);
+  const qty    = parseInt(document.getElementById('air-qty').value) || 1;
+  if ([l,w,h,weight].some(isNaN)) { alert('すべての値を入力してください'); return; }
+  const volW1  = (l*w*h) / 6000;
+  const cw1    = Math.max(volW1, weight);
+  const cwTot  = cw1 * qty;
+  const tag    = weight >= volW1 ? '実重量適用（W）' : '容積重量適用（V）';
+  appendCalcResult('air-result', `<div class="calc-row">
+    <div class="calc-item"><div class="calc-item-label">容積重量 (1個)</div><div class="calc-item-value">${volW1.toFixed(2)} kg</div></div>
+    <div class="calc-item"><div class="calc-item-label">実重量 (1個)</div><div class="calc-item-value">${weight.toFixed(2)} kg</div></div>
+    <div class="calc-item hl"><div class="calc-item-label">CW (1個) ／ ${tag}</div><div class="calc-item-value">${cw1.toFixed(2)} kg</div></div>
+    ${qty>1?`<div class="calc-item hl"><div class="calc-item-label">CW 合計 (×${qty}個)</div><div class="calc-item-value">${cwTot.toFixed(2)} kg</div></div>`:''}
+  </div>`);
+}
+
+function calcLclRT() {
+  const l      = parseFloat(document.getElementById('lcl-l').value);
+  const w      = parseFloat(document.getElementById('lcl-w').value);
+  const h      = parseFloat(document.getElementById('lcl-h').value);
+  const weight = parseFloat(document.getElementById('lcl-weight').value);
+  const qty    = parseInt(document.getElementById('lcl-qty').value) || 1;
+  if ([l,w,h,weight].some(isNaN)) { alert('すべての値を入力してください'); return; }
+  const cbm1   = (l * w * h) / 1e6;
+  const wTon1  = weight / 1000;
+  const rt1    = Math.max(cbm1, wTon1);
+  const rtTot  = rt1 * qty;
+  const cbmTot = cbm1 * qty;
+  const wTonTot= wTon1 * qty;
+  const tag    = wTon1 >= cbm1 ? 'W（実重量トン）適用' : 'M（容積）適用';
+  appendCalcResult('lcl-result', `<div class="calc-row">
+    <div class="calc-item"><div class="calc-item-label">CBM (1個)</div><div class="calc-item-value">${cbm1.toFixed(4)} CBM</div></div>
+    <div class="calc-item"><div class="calc-item-label">W (1個)</div><div class="calc-item-value">${wTon1.toFixed(4)} ton</div></div>
+    <div class="calc-item hl"><div class="calc-item-label">RT (1個) ／ ${tag}</div><div class="calc-item-value">${rt1.toFixed(4)} RT</div></div>
+    ${qty>1?`<div class="calc-item"><div class="calc-item-label">CBM 合計 (×${qty}個)</div><div class="calc-item-value">${cbmTot.toFixed(4)} CBM</div></div><div class="calc-item"><div class="calc-item-label">W 合計</div><div class="calc-item-value">${wTonTot.toFixed(4)} ton</div></div><div class="calc-item hl"><div class="calc-item-label">RT 合計</div><div class="calc-item-value">${rtTot.toFixed(4)} RT</div></div>`:''}
+  </div>`);
+}
+
+
+
+function calcCBMSai() {
+  const unit = document.getElementById('cbm-unit').value;
+  const l    = parseFloat(document.getElementById('cbm-l').value);
+  const w    = parseFloat(document.getElementById('cbm-w').value);
+  const h    = parseFloat(document.getElementById('cbm-h').value);
+  const qty  = parseInt(document.getElementById('cbm-qty').value) || 1;
+  if ([l,w,h].some(isNaN)) { alert('寸法を入力してください'); return; }
+  const F    = {cm:0.01, mm:0.001, in:0.0254, m:1}[unit];
+  const cbm1 = l*F * w*F * h*F;
+  // 才数計算用はcm換算
+  const lcm  = l * {cm:1, mm:0.1, in:2.54, m:100}[unit];
+  const wcm  = w * {cm:1, mm:0.1, in:2.54, m:100}[unit];
+  const hcm  = h * {cm:1, mm:0.1, in:2.54, m:100}[unit];
+  const sai1 = (lcm*wcm*hcm) / 27826.5;
+  const cbmTot = cbm1 * qty;
+  const saiTot = sai1 * qty;
+  const TRUCKS = [{name:'軽バン',cap:40},{name:'2tトラック',cap:120},{name:'4tトラック',cap:250},{name:'10tトラック',cap:580}];
+  const truckHtml = TRUCKS.map(t =>
+    '<div class="calc-item"><div class="calc-item-label">' + t.name + '（〜' + t.cap + '才）</div><div class="calc-item-value">' + Math.ceil(saiTot/t.cap) + ' 台</div></div>'
+  ).join('');
+  appendCalcResult('cbm-result', '<div class="calc-row">'
+    + '<div class="calc-item hl"><div class="calc-item-label">CBM（1個）</div><div class="calc-item-value">' + cbm1.toFixed(4) + ' CBM</div></div>'
+    + '<div class="calc-item hl"><div class="calc-item-label">才数（1個）</div><div class="calc-item-value">' + sai1.toFixed(2) + ' 才</div></div>'
+    + (qty>1 ? '<div class="calc-item hl"><div class="calc-item-label">CBM 合計（×' + qty + '個）</div><div class="calc-item-value">' + cbmTot.toFixed(4) + ' CBM</div></div>'
+             + '<div class="calc-item hl"><div class="calc-item-label">才数 合計</div><div class="calc-item-value">' + saiTot.toFixed(2) + ' 才</div></div>' : '')
+    + '</div>'
+    + '<div style="margin-top:12px;font-size:12px;color:var(--text-md);font-weight:600;">🚛 トラック積載台数目安（合計才数 ' + saiTot.toFixed(1) + ' 才）</div>'
+    + '<div class="calc-row" style="margin-top:6px;">' + truckHtml + '</div>'
+  );
+}
+
+function calcCBM() { calcCBMSai(); }
+
+function togglePalCustom() {
+  document.getElementById('pal-custom-wrap').style.display =
+    document.getElementById('pal-size').value === 'custom' ? 'flex' : 'none';
+}
+
+function calcPalletize() {
+  const sv = document.getElementById('pal-size').value;
+  const SIZES = {'1100x1100':[1100,1100],'1200x1000':[1200,1000],'1200x800':[1200,800],'1219x1016':[1219,1016]};
+  let pw, pd;
+  if (SIZES[sv]) { [pw,pd] = SIZES[sv]; }
+  else {
+    pw = parseFloat(document.getElementById('pal-pw').value);
+    pd = parseFloat(document.getElementById('pal-pd').value);
+    if (isNaN(pw)||isNaN(pd)) { alert('パレットサイズを入力してください'); return; }
+  }
+  const bl  = parseFloat(document.getElementById('pal-l').value);
+  const bw  = parseFloat(document.getElementById('pal-w').value);
+  const bh  = parseFloat(document.getElementById('pal-h').value);
+  const lay = parseInt(document.getElementById('pal-layers').value) || 1;
+  const tot = parseInt(document.getElementById('pal-total').value) || 0;
+  if ([bl,bw,bh].some(isNaN)) { alert('箱の寸法を入力してください'); return; }
+  const o1 = {cols:Math.floor(pw/bl),rows:Math.floor(pd/bw)};
+  const o2 = {cols:Math.floor(pw/bw),rows:Math.floor(pd/bl)};
+  const p1 = o1.cols*o1.rows, p2 = o2.cols*o2.rows;
+  const best = p1>=p2 ? o1 : o2;
+  const perPallet = Math.max(p1,p2) * lay;
+  const pNeeded   = tot > 0 ? Math.ceil(tot/perPallet) : null;
+  appendCalcResult('pal-result', `<div class="calc-row">
+    <div class="calc-item"><div class="calc-item-label">パレットサイズ</div><div class="calc-item-value">${pw}×${pd} mm</div></div>
+    <div class="calc-item hl"><div class="calc-item-label">1段あたり</div><div class="calc-item-value">${Math.max(p1,p2)} 個 <span class="calc-note">(${best.cols}列×${best.rows}行)</span></div></div>
+    <div class="calc-item hl"><div class="calc-item-label">1パレット合計（${lay}段）</div><div class="calc-item-value">${perPallet} 個</div></div>
+    <div class="calc-item"><div class="calc-item-label">積載後高さ（箱のみ）</div><div class="calc-item-value">${(bh*lay).toLocaleString()} mm</div></div>
+    ${pNeeded!==null?`<div class="calc-item hl"><div class="calc-item-label">必要パレット数（${tot}個）</div><div class="calc-item-value">${pNeeded} パレット</div></div>`:''}
+  </div>`, `${pw}×${pd}mm / 箱${bl}×${bw}×${bh}mm ${lay}段${tot>0?' / 総'+tot+'個':''}`);
+}
+
+function calcVanning() {
+  const CONT = {
+    '20ft':{l:589,w:235,h:239,maxPay:28000,label:'20ft Dry'},
+    '40ft':{l:1203,w:235,h:239,maxPay:26500,label:'40ft Dry'},
+    '40hc':{l:1203,w:235,h:269,maxPay:26500,label:'40ft HC'},
+  };
+  const bl   = parseFloat(document.getElementById('van-l').value);
+  const bw   = parseFloat(document.getElementById('van-w').value);
+  const bh   = parseFloat(document.getElementById('van-h').value);
+  const bkg  = parseFloat(document.getElementById('van-weight').value) || 0;
+  const qty  = parseInt(document.getElementById('van-qty').value) || 0;
+  if ([bl,bw,bh].some(isNaN)) { alert('貨物の寸法を入力してください'); return; }
+  const dims  = [bl,bw,bh];
+  const noStack = document.getElementById('van-no-stack').checked;
+  const PERMS = [[0,1,2],[0,2,1],[1,0,2],[1,2,0],[2,0,1],[2,1,0]];
+  const cCBM  = (bl*bw*bh)/1e6;
+
+  const rows = Object.entries(CONT).map(([key,c]) => {
+    const contCBM = (c.l*c.w*c.h)/1e6;
+    let maxPer = 0;
+    PERMS.forEach(p => {
+      const vLayers = noStack ? Math.min(1, Math.floor(c.h/dims[p[2]])) : Math.floor(c.h/dims[p[2]]);
+      const q = Math.floor(c.l/dims[p[0]])*Math.floor(c.w/dims[p[1]])*vLayers;
+      if (q>maxPer) maxPer=q;
+    });
+    const need      = qty>0 ? Math.ceil(qty/maxPer) : null;
+    const used      = Math.min(maxPer, qty||maxPer);
+    const util      = (cCBM*used/contCBM*100).toFixed(1);
+    const totalKg   = bkg>0&&qty>0 ? qty*bkg : bkg>0 ? maxPer*bkg : null;
+    const overW     = totalKg && need && totalKg > c.maxPay*need;
+    return {key,c,maxPer,contCBM,need,util,totalKg,overW};
+  });
+
+  // 推奨: qty指定時は最少本数かつ重量OK、未指定はCBM率最高
+  let rec;
+  if (qty>0) {
+    const ok = rows.filter(r=>!r.overW);
+    rec = (ok.length?ok:rows).reduce((b,r)=>r.need<b.need?r:b);
+  } else {
+    rec = rows.reduce((b,r)=>parseFloat(r.util)>parseFloat(b.util)?r:b);
+  }
+
+  const cardsHtml = rows.map(r => {
+    const isRec  = r.key===rec.key;
+    const badge  = isRec ? '<span style="background:#d4edda;color:#155724;font-size:10px;font-weight:700;padding:2px 6px;border-radius:4px;margin-left:6px;">✅ 推奨</span>' : '';
+    const main   = r.need ? `${r.need} 本必要` : `最大 ${r.maxPer.toLocaleString()} 個/本`;
+    const kgLine = r.totalKg ? `概算 ${r.totalKg.toLocaleString()} kg／上限 ${(r.c.maxPay*(r.need||1)).toLocaleString()} kg` : '';
+    const warn   = r.overW ? ' <span style="color:#e53e3e;font-size:10px;">⚠️ 重量超過</span>' : '';
+    return `<div class="calc-item ${isRec?'hl':''}">
+      <div class="calc-item-label">${r.c.label}${badge}</div>
+      <div class="calc-item-value" style="font-size:14px;">${main}${warn}</div>
+      <div style="font-size:11px;color:#718096;margin-top:3px;">CBM使用率 ${r.util}%　${kgLine}</div>
+    </div>`;
+  }).join('');
+
+  appendCalcResult('van-result', `<div class="calc-row">${cardsHtml}</div>
+  <p style="font-size:11px;color:#718096;margin-top:10px;">※ ダンネージなしの理論値。実際の積み付けは現場でご確認ください。</p>`,
+  `${bl}×${bw}×${bh}cm / ${bkg}kg${qty>0?' × '+qty+'個':''}${noStack?' / 段積み不可':''}`);
+}
+
+// ================================================================
+//  レート換算
+// ================================================================
+const RATE_CURRENCIES = {
+  JPY:{name:'日本円',          flag:'🇯🇵', dec:0},
+  USD:{name:'米ドル',          flag:'🇺🇸', dec:2},
+  EUR:{name:'ユーロ',          flag:'🇪🇺', dec:2},
+  GBP:{name:'英ポンド',        flag:'🇬🇧', dec:2},
+  CNY:{name:'中国人民元',      flag:'🇨🇳', dec:2},
+  HKD:{name:'香港ドル',        flag:'🇭🇰', dec:2},
+  SGD:{name:'シンガポールドル',flag:'🇸🇬', dec:2},
+  KRW:{name:'韓国ウォン',      flag:'🇰🇷', dec:0},
+  THB:{name:'タイバーツ',      flag:'🇹🇭', dec:2},
+};
+const _rateCache = {};
+
+async function fetchRates(base) {
+  const now = Date.now();
+  if (_rateCache[base] && now - _rateCache[base].ts < 3600000) return _rateCache[base].rates;
+  const res  = await fetch(`https://open.er-api.com/v6/latest/${base}`);
+  const data = await res.json();
+  if (data.result !== 'success') throw new Error('API error');
+  _rateCache[base] = { rates: data.rates, ts: now };
+  return data.rates;
+}
+
+function fmtAmt(v, dec) {
+  return v.toLocaleString('ja-JP', {minimumFractionDigits: dec, maximumFractionDigits: dec});
+}
+function fmtRate(r, dec) {
+  if (dec === 0) return r.toFixed(2);
+  if (r < 0.001) return r.toFixed(6);
+  if (r < 0.1)   return r.toFixed(4);
+  return r.toFixed(4);
+}
+
+async function calcRate() {
+  const from   = document.getElementById('rate-from').value;
+  const amount = parseFloat(document.getElementById('rate-amount').value);
+  if (isNaN(amount) || amount <= 0) { alert('金額を入力してください'); return; }
+
+  const status = document.getElementById('rate-status');
+  status.textContent = '⏳ レートを取得中...';
+
+  try {
+    const rates = await fetchRates(from);
+    const ts    = new Date().toLocaleString('ja-JP');
+    status.innerHTML = `✅ レート取得完了 <span style="color:#a0aec0;">${ts}</span>`;
+
+    const fromInfo = RATE_CURRENCIES[from];
+    const targets  = Object.entries(RATE_CURRENCIES).filter(([code]) => code !== from);
+    const cards    = targets.map(([code, info]) => {
+      const rate      = rates[code];
+      const converted = amount * rate;
+      return `<div class="calc-item hl" style="min-width:170px;">
+        <div class="calc-item-label">${info.flag} ${code}　${info.name}</div>
+        <div class="calc-item-value">${fmtAmt(converted, info.dec)}</div>
+        <div style="font-size:11px;color:#718096;margin-top:3px;">1 ${from} = ${fmtRate(rate, info.dec)} ${code}</div>
+      </div>`;
+    }).join('');
+
+    appendCalcResult('rate-result',
+      `<div class="calc-row">${cards}</div>`,
+      `${fmtAmt(amount, fromInfo.dec)} ${fromInfo.flag} ${from}`);
+  } catch(e) {
+    status.textContent = '❌ レート取得に失敗しました。ネットワーク環境を確認してください。';
+  }
+}
+
+//  保険料計算
+function calcInsurance() {
+  const fob     = parseFloat(document.getElementById('ins-fob').value) || 0;
+  const freight = parseFloat(document.getElementById('ins-freight').value) || 0;
+  const rate    = parseFloat(document.getElementById('ins-rate').value) || 0;
+  if (fob <= 0) { alert('FOB金額を入力してください'); return; }
+  if (rate <= 0) { alert('保険料率を入力してください'); return; }
+
+  const insurable = Math.ceil((fob + freight) * 1.10);  // 保険価額
+  const premium   = Math.ceil(insurable * (rate / 100)); // 保険料
+  const cif       = fob + freight + premium;             // CIF概算
+
+  const fmt = v => v.toLocaleString('ja-JP');
+  const rows = [
+    ['FOB金額', `¥${fmt(fob)}`],
+    ['運賃', `¥${fmt(freight)}`],
+    ['保険価額', `¥${fmt(insurable)}`, '（FOB＋運賃）× 1.10'],
+    ['保険料率', `${rate}%`],
+    ['保険料', `¥${fmt(premium)}`, '保険価額 × 保険料率'],
+    ['CIF概算', `¥${fmt(cif)}`, 'FOB＋運賃＋保険料'],
+  ];
+  const tableRows = rows.map(([lbl,val,note]) =>
+    `<tr><td style="padding:5px 10px;color:#4a5568;width:140px;">${lbl}</td>
+         <td style="padding:5px 10px;font-weight:600;text-align:right;">${val}</td>
+         <td style="padding:5px 10px;font-size:11px;color:#718096;">${note||''}</td></tr>`
+  ).join('');
+  appendCalcResult('ins-result',
+    `<table style="width:100%;border-collapse:collapse;">${tableRows}</table>`,
+    `FOB ¥${fmt(fob)} / 運賃 ¥${fmt(freight)} / 料率 ${rate}% → 保険料 ¥${fmt(premium)}`
+  );
+}
+
+
+//  関税・消費税計算
+function calcDuty() {
+  const cifRaw   = parseFloat(document.getElementById('duty-cif').value)   || 0;
+  const hs       = document.getElementById('duty-hs').value.trim();
+  const dutyRate = parseFloat(document.getElementById('duty-rate').value)  || 0;
+  const extraRate= parseFloat(document.getElementById('duty-extra').value) || 0;
+  if (cifRaw <= 0) { alert('課税価格（CIF）を入力してください'); return; }
+
+  // 課税価格: 1,000円未満切り捨て
+  const cifBase = Math.floor(cifRaw / 1000) * 1000;
+
+  // 関税: 課税価格 × 関税率（100円未満切り捨て）
+  const duty    = Math.floor(cifBase * (dutyRate / 100) / 100) * 100;
+  const extra   = Math.floor(cifBase * (extraRate / 100) / 100) * 100;
+  const totalDuty = duty + extra;
+
+  // 消費税の課税標準: 課税価格 + 関税（1,000円未満切り捨て）
+  const consTaxBase = Math.floor((cifBase + totalDuty) / 1000) * 1000;
+  // 消費税: 課税標準 × 10%（100円未満切り捨て）
+  const consTax     = Math.floor(consTaxBase * 0.10 / 100) * 100;
+  // 地方消費税: 消費税 × 22/78（100円未満切り捨て）
+  const localTax    = Math.floor(consTax * (22/78) / 100) * 100;
+  const totalTax    = totalDuty + consTax + localTax;
+  const totalCost   = cifRaw + totalTax;
+
+  const fmt = v => v.toLocaleString('ja-JP');
+  const pct = (r) => r > 0 ? ` (${r}%)` : ' (0%)';
+  const hsNote = hs ? ` ／ HSコード: ${hs}` : '';
+
+  const rows = [
+    ['課税価格（1000円未満切捨）', `¥${fmt(cifBase)}`, ''],
+    ['関税'+pct(dutyRate), `¥${fmt(duty)}`, ''],
+    ['追加関税'+pct(extraRate), `¥${fmt(extra)}`, extra===0?'—':''],
+    ['関税合計', `¥${fmt(totalDuty)}`, ''],
+    ['消費税課税標準', `¥${fmt(consTaxBase)}`, '（課税価格＋関税合計）1000円未満切捨'],
+    ['消費税（10%）', `¥${fmt(consTax)}`, '100円未満切捨'],
+    ['地方消費税（消費税×22/78）', `¥${fmt(localTax)}`, '100円未満切捨'],
+    ['▶ 税金合計', `¥${fmt(totalTax)}`, '関税＋消費税＋地方消費税'],
+    ['▶ 輸入総コスト概算', `¥${fmt(totalCost)}`, 'CIF（入力値）＋税金合計'],
+  ];
+  const tableRows = rows.map(([lbl,val,note], i) => {
+    const highlight = i >= 7 ? 'background:#f0fff4;font-weight:700;' : '';
+    return `<tr style="${highlight}">
+      <td style="padding:5px 10px;color:#4a5568;width:210px;">${lbl}</td>
+      <td style="padding:5px 10px;font-weight:600;text-align:right;">${val}</td>
+      <td style="padding:5px 10px;font-size:11px;color:#718096;">${note}</td></tr>`;
+  }).join('');
+
+  appendCalcResult('duty-result',
+    `<table style="width:100%;border-collapse:collapse;">${tableRows}</table>`,
+    `CIF ¥${fmt(cifRaw)} / 関税${dutyRate}%${hsNote} → 税合計 ¥${fmt(totalTax)}`
+  );
+}
+
+
+//  フィードバック送信（Netlify Function経由）
+async function sendFeedback(tabName, inputId) {
+  const textarea = document.getElementById(inputId);
+  const statusEl = document.getElementById(inputId + '-status');
+  const text = textarea.value.trim();
+  if (!text) { alert('フィードバック内容を入力してください'); return; }
+
+  statusEl.style.color = '#718096';
+  statusEl.textContent = '送信中...';
+  const btn = statusEl.previousElementSibling;
+  btn.disabled = true;
+
+  try {
+    const res = await fetch('/.netlify/functions/feedback', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ tabName, feedbackText: text })
+    });
+
+    if (res.ok) {
+      statusEl.style.color = '#48bb78';
+      statusEl.textContent = '✅ 送信しました！ありがとうございます。';
+      textarea.value = '';
+      setTimeout(() => { statusEl.textContent = ''; }, 4000);
+    } else {
+      let errMsg = 'HTTP ' + res.status;
+      try {
+        const err = await res.json();
+        errMsg = err.message || err.error || errMsg;
+      } catch {}
+      statusEl.style.color = '#e53e3e';
+      statusEl.textContent = '❌ エラー: ' + errMsg;
+    }
+  } catch(e) {
+    statusEl.style.color = '#e53e3e';
+    statusEl.textContent = '❌ 送信失敗: ' + (e.message || 'ネットワークエラー');
+  } finally {
+    btn.disabled = false;
+  }
+}
+</script>
+
+<script>
+(function() {
+  const el = document.getElementById('last-updated');
+  if (!el) return;
+  const d = new Date(document.lastModified);
+  if (isNaN(d.getTime())) return;
+  el.textContent = d.toLocaleDateString('ja-JP', { year: 'numeric', month: 'short', day: 'numeric' });
+})();
+</script>
+</body>
+</html>
