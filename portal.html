@@ -460,6 +460,35 @@ body {
 .btn-clear { background: var(--card-bg); color: var(--text-md); border: 1px solid var(--border); padding: 9px 13px; border-radius: 7px; font-size: 13px; font-weight: 600; cursor: pointer; white-space: nowrap; transition: all 0.2s; }
 .btn-clear:hover { background: #f0dada; color: #8c3a3a; border-color: #c8a0a0; }
 
+/* ===== 追跡履歴スタック ===== */
+.track-history-wrap { margin-bottom: 14px; }
+.track-history-list { display: flex; flex-wrap: wrap; gap: 7px; margin-top: 8px; }
+.track-history-item {
+  display: flex; align-items: center; gap: 8px;
+  background: #fff; border: 1px solid var(--border); border-radius: 8px;
+  padding: 7px 12px; cursor: pointer; transition: all 0.15s; font-size: 12px;
+}
+.track-history-item:hover { border-color: var(--accent); background: var(--accent-lt); }
+.track-history-num  { font-weight: 700; color: var(--text); }
+.track-history-carr { color: var(--text-md); font-size: 11px; }
+.track-history-date { color: var(--text-lt); font-size: 11px; }
+.track-history-del  { background: none; border: none; color: var(--text-lt); cursor: pointer; padding: 0 2px; font-size: 14px; line-height: 1; }
+.track-history-del:hover { color: #b04040; }
+
+/* ===== 計算結果コピーボタン ===== */
+.btn-copy-result {
+  background: none; border: 1px solid var(--border); color: var(--text-md);
+  padding: 2px 8px; border-radius: 5px; font-size: 11px;
+  cursor: pointer; white-space: nowrap; transition: all 0.15s;
+}
+.btn-copy-result:hover { background: var(--accent-lt); border-color: var(--accent); color: var(--accent-dk); }
+
+/* ===== コンテナ断面SVG ===== */
+.container-svg-wrap  { margin-top: 14px; display: flex; flex-wrap: wrap; gap: 14px; align-items: flex-start; }
+.container-svg-item  { text-align: center; }
+.container-svg-label { font-size: 11px; color: var(--text-md); font-weight: 600; margin-top: 4px; }
+.container-svg-sub   { font-size: 10px; color: var(--text-lt); margin-top: 2px; }
+
 /* ===== フィードバックフッター ===== */
 .feedback-footer {
   margin-top: 22px;
@@ -693,7 +722,61 @@ body {
 .sub-nav { display: none !important; margin-bottom: 14px; }
 .sub-nav.active { display: flex !important; }
 
-  </style>
+  
+/* ===== セクション別フィードバックウィジェット ===== */
+.section-fb {
+  margin-top: 14px;
+  padding-top: 10px;
+  border-top: 1px solid var(--border);
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+}
+.section-fb-btn {
+  background: none;
+  border: 1px solid var(--border);
+  color: var(--text-lt);
+  font-size: 11px;
+  padding: 4px 11px;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: all 0.15s;
+  line-height: 1.5;
+}
+.section-fb-btn:hover {
+  background: var(--accent-lt);
+  border-color: var(--accent);
+  color: var(--accent-dk);
+}
+.section-fb-form {
+  display: none;
+  width: 100%;
+  margin-top: 8px;
+}
+.section-fb-form.open { display: block; }
+.section-fb-textarea {
+  width: 100%;
+  min-height: 60px;
+  padding: 8px 10px;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  font-size: 12px;
+  font-family: inherit;
+  resize: vertical;
+  background: #fff;
+  color: var(--text);
+  box-sizing: border-box;
+  transition: border-color 0.2s;
+}
+.section-fb-textarea:focus { outline: none; border-color: var(--accent); }
+.section-fb-actions {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-top: 6px;
+}
+.section-fb-status { font-size: 12px; }
+</style>
 </head>
 <body>
 <div id="clipboard-toast">📋 番号をコピーしました。貼り付けて検索してください。</div>
@@ -766,6 +849,13 @@ body {
   <!-- ===================== Tab 1: コンテナ追跡 ===================== -->
   <div class="tab-content" id="tab-tracking">
 
+    <!-- 追跡履歴スタック -->
+    <div class="card track-history-wrap" id="track-history-wrap" style="display:none;">
+      <div class="section-title">🕐 最近の追跡履歴</div>
+      <p style="font-size:12px;color:var(--text-md);margin-bottom:8px;">クリックするとその番号で再追跡します。</p>
+      <div class="track-history-list" id="track-history-list"></div>
+    </div>
+
     <div class="card">
       <div class="section-title">🔍 クイック追跡</div>
       <div class="lookup-form">
@@ -784,18 +874,7 @@ body {
       <div class="section-title">🌐 船会社別 トラッキングページ</div>
       <p style="font-size:12px;color:#718096;margin-bottom:12px;">番号入力後にクリックするとその船会社のトラッキングページへ直接ジャンプ。番号なしの場合はトップページへ。</p>
       <div class="carrier-grid" id="carrier-grid"></div>
-    </div>
-
-
-  <div class="feedback-footer">
-    <div class="feedback-footer-title">💬 このタブへのフィードバック・改善要望</div>
-    <textarea class="feedback-textarea" id="fb-tracking" placeholder="ご意見・改善要望・追加してほしい機能などをお書きください"></textarea>
-    <div class="feedback-actions">
-      <button class="btn-primary" style="padding:8px 18px;font-size:13px;" onclick="sendFeedback('コンテナ追跡', 'fb-tracking')">送信</button>
-      <span class="feedback-status" id="fb-tracking-status"></span>
-    </div>
-  </div>
-  </div><!-- /tab-tracking -->
+    </div>  </div><!-- /tab-tracking -->
 
   <!-- ===================== Tab 2: 本船動静 ===================== -->
   <div class="tab-content" id="tab-vessel">
@@ -810,18 +889,7 @@ body {
       <div class="section-title">🚢 Search by Vessel — 船会社別ページへジャンプ</div>
       <p style="font-size:12px;color:#718096;margin-bottom:14px;">船会社のボタンをクリックすると、各社の本船スケジュール検索ページへ直接移動します。</p>
       <div class="carrier-grid" id="vessel-grid"></div>
-    </div>
-
-
-  <div class="feedback-footer">
-    <div class="feedback-footer-title">💬 このタブへのフィードバック・改善要望</div>
-    <textarea class="feedback-textarea" id="fb-vessel" placeholder="ご意見・改善要望・追加してほしい機能などをお書きください"></textarea>
-    <div class="feedback-actions">
-      <button class="btn-primary" style="padding:8px 18px;font-size:13px;" onclick="sendFeedback('本船動静', 'fb-vessel')">送信</button>
-      <span class="feedback-status" id="fb-vessel-status"></span>
-    </div>
-  </div>
-  </div><!-- /tab-vessel -->
+    </div>  </div><!-- /tab-vessel -->
 
   <!-- ===================== CY OPEN/CUT tab ===================== -->
   <div class="tab-content" id="tab-cycut">
@@ -830,17 +898,7 @@ body {
       <div class="section-title">📅 CY OPEN / CUT — 船会社別ページへジャンプ</div>
       <p style="font-size:12px;color:#718096;margin-bottom:14px;">各船会社のCY OPEN・CUTカットオフ情報ページへジャンプします。グレーの船会社は情報未登録またはご確認ください。</p>
       <div class="carrier-grid" id="cycut-grid"></div>
-    </div>
-
-  <div class="feedback-footer">
-    <div class="feedback-footer-title">💬 このタブへのフィードバック・改善要望</div>
-    <textarea class="feedback-textarea" id="fb-cycut" placeholder="ご意見・改善要望・追加してほしい機能などをお書きください"></textarea>
-    <div class="feedback-actions">
-      <button class="btn-primary" style="padding:8px 18px;font-size:13px;" onclick="sendFeedback('CY OPEN/CUT', 'fb-cycut')">送信</button>
-      <span class="feedback-status" id="fb-cycut-status"></span>
-    </div>
-  </div>
-  </div><!-- /tab-cycut -->
+    </div>  </div><!-- /tab-cycut -->
 
   <!-- ===================== サービス航路 tab ===================== -->
   <div class="tab-content" id="tab-route">
@@ -857,17 +915,7 @@ body {
       <div id="route-articles" style="display:flex;flex-direction:column;gap:10px;">
         <div style="color:var(--text-lt);font-size:13px;padding:12px 0;">読み込み中...</div>
       </div>
-    </div>
-
-  <div class="feedback-footer">
-    <div class="feedback-footer-title">💬 このタブへのフィードバック・改善要望</div>
-    <textarea class="feedback-textarea" id="fb-route" placeholder="ご意見・改善要望・追加してほしい機能などをお書きください"></textarea>
-    <div class="feedback-actions">
-      <button class="btn-primary" style="padding:8px 18px;font-size:13px;" onclick="sendFeedback('サービス航路', 'fb-route')">送信</button>
-      <span class="feedback-status" id="fb-route-status"></span>
-    </div>
-  </div>
-  </div><!-- /tab-route -->
+    </div>  </div><!-- /tab-route -->
 
   <!-- ===================== サーチャージ tab ===================== -->
   <div class="tab-content" id="tab-surcharge">
@@ -888,17 +936,7 @@ body {
       <div class="section-title">📋 その他サーチャージ <span class="wip-badge">🚧 URL未登録</span></div>
       <p style="font-size:12px;color:#718096;margin-bottom:14px;">PSS・GRI・EIS等の各種サーチャージ案内ページへジャンプします。</p>
       <div class="carrier-grid" id="surcharge-other-grid"></div>
-    </div>
-
-  <div class="feedback-footer">
-    <div class="feedback-footer-title">💬 このタブへのフィードバック・改善要望</div>
-    <textarea class="feedback-textarea" id="fb-surcharge" placeholder="ご意見・改善要望・追加してほしい機能などをお書きください"></textarea>
-    <div class="feedback-actions">
-      <button class="btn-primary" style="padding:8px 18px;font-size:13px;" onclick="sendFeedback('サーチャージ', 'fb-surcharge')">送信</button>
-      <span class="feedback-status" id="fb-surcharge-status"></span>
-    </div>
-  </div>
-  </div><!-- /tab-surcharge -->
+    </div>  </div><!-- /tab-surcharge -->
 
   <!-- ===================== Tab 4: 書類 ===================== -->
   <div class="tab-content" id="tab-bldo">
@@ -913,17 +951,7 @@ body {
       <div class="section-title">📤 輸出申請 <span class="wip-badge">🚧 一部登録済み</span></div>
       <p style="font-size:12px;color:#718096;margin-bottom:14px;">BL発行依頼など、輸出に関する申請フォームへジャンプします。</p>
       <div class="carrier-grid" id="bldo-export-grid"></div>
-    </div>
-
-  <div class="feedback-footer">
-    <div class="feedback-footer-title">💬 このタブへのフィードバック・改善要望</div>
-    <textarea class="feedback-textarea" id="fb-bldo" placeholder="ご意見・改善要望・追加してほしい機能などをお書きください"></textarea>
-    <div class="feedback-actions">
-      <button class="btn-primary" style="padding:8px 18px;font-size:13px;" onclick="sendFeedback('書類', 'fb-bldo')">送信</button>
-      <span class="feedback-status" id="fb-bldo-status"></span>
-    </div>
-  </div>
-  </div><!-- /tab-bldo -->
+    </div>  </div><!-- /tab-bldo -->
 
   <!-- ===================== Tab 5: BL 記載事項 ===================== -->
   <div class="tab-content" id="tab-blrules">
@@ -934,18 +962,7 @@ body {
         国・地域ごとのBL記載規則。各船会社の案内ページが登録されると「案内ページ ↗」リンクが表示されます。
       </p>
       <div class="blrules-grid" id="blrules-grid"></div>
-    </div>
-
-
-  <div class="feedback-footer">
-    <div class="feedback-footer-title">💬 このタブへのフィードバック・改善要望</div>
-    <textarea class="feedback-textarea" id="fb-blrules" placeholder="ご意見・改善要望・追加してほしい機能などをお書きください"></textarea>
-    <div class="feedback-actions">
-      <button class="btn-primary" style="padding:8px 18px;font-size:13px;" onclick="sendFeedback('BL記載事項', 'fb-blrules')">送信</button>
-      <span class="feedback-status" id="fb-blrules-status"></span>
-    </div>
-  </div>
-  </div><!-- /tab-blrules -->
+    </div>  </div><!-- /tab-blrules -->
 
   <!-- ===================== Tab 6: フリータイム ===================== -->
   <div class="tab-content" id="tab-freetime">
@@ -962,18 +979,7 @@ body {
         <span class="result-url" id="ft-url"></span>
         <a class="btn-open" id="ft-link" href="#" target="_blank">開く ↗</a>
       </div>
-    </div>
-
-
-  <div class="feedback-footer">
-    <div class="feedback-footer-title">💬 このタブへのフィードバック・改善要望</div>
-    <textarea class="feedback-textarea" id="fb-freetime" placeholder="ご意見・改善要望・追加してほしい機能などをお書きください"></textarea>
-    <div class="feedback-actions">
-      <button class="btn-primary" style="padding:8px 18px;font-size:13px;" onclick="sendFeedback('フリータイム', 'fb-freetime')">送信</button>
-      <span class="feedback-status" id="fb-freetime-status"></span>
-    </div>
-  </div>
-  </div><!-- /tab-freetime -->
+    </div>  </div><!-- /tab-freetime -->
 
   <!-- ===================== Tab: インコタームズ ===================== -->
   <div class="tab-content" id="tab-incoterms">
@@ -1092,17 +1098,7 @@ body {
           運賃が不明な場合は税関が認定した方法（実費証明など）で計算します。
         </p>
       </div>
-    </div>
-
-  <div class="feedback-footer">
-    <div class="feedback-footer-title">💬 このタブへのフィードバック・改善要望</div>
-    <textarea class="feedback-textarea" id="fb-incoterms" placeholder="ご意見・改善要望・追加してほしい機能などをお書きください"></textarea>
-    <div class="feedback-actions">
-      <button class="btn-primary" style="padding:8px 18px;font-size:13px;" onclick="sendFeedback('インコタームズ', 'fb-incoterms')">送信</button>
-      <span class="feedback-status" id="fb-incoterms-status"></span>
-    </div>
-  </div>
-  </div><!-- /tab-incoterms -->
+    </div>  </div><!-- /tab-incoterms -->
   <!-- ===================== Tab: 種類・サイズ ===================== -->
   <div class="tab-content" id="tab-sizes">
 
@@ -1219,17 +1215,7 @@ body {
           申請はオンライン（特車申請システム）でも可能。許可には条件（夜間通行、誘導車の配置等）が付される場合があります。
         </p>
       </div>
-    </div>
-
-  <div class="feedback-footer">
-    <div class="feedback-footer-title">💬 このタブへのフィードバック・改善要望</div>
-    <textarea class="feedback-textarea" id="fb-sizes" placeholder="ご意見・改善要望・追加してほしい機能などをお書きください"></textarea>
-    <div class="feedback-actions">
-      <button class="btn-primary" style="padding:8px 18px;font-size:13px;" onclick="sendFeedback('種類・サイズ', 'fb-sizes')">送信</button>
-      <span class="feedback-status" id="fb-sizes-status"></span>
-    </div>
-  </div>
-  </div><!-- /tab-sizes -->
+    </div>  </div><!-- /tab-sizes -->
   <!-- ===================== Tab: 海上貨物保険 ===================== -->
   <div class="tab-content" id="tab-insurance">
 
@@ -1357,17 +1343,7 @@ body {
           </tbody>
         </table>
       </div>
-    </div>
-
-  <div class="feedback-footer">
-    <div class="feedback-footer-title">💬 このタブへのフィードバック・改善要望</div>
-    <textarea class="feedback-textarea" id="fb-insurance" placeholder="ご意見・改善要望・追加してほしい機能などをお書きください"></textarea>
-    <div class="feedback-actions">
-      <button class="btn-primary" style="padding:8px 18px;font-size:13px;" onclick="sendFeedback('海上貨物保険', 'fb-insurance')">送信</button>
-      <span class="feedback-status" id="fb-insurance-status"></span>
-    </div>
-  </div>
-  </div><!-- /tab-insurance -->
+    </div>  </div><!-- /tab-insurance -->
 
   <!-- ===================== Tab: BL約款 ===================== -->
   <div class="tab-content" id="tab-blclause">
@@ -1487,17 +1463,7 @@ body {
           高価な貨物・精密機器の輸送では、B/Lへの<strong>申告価額（Declared Value）記載</strong>による責任額引き上げと、<strong>ICC(A)条件の貨物保険</strong>の付保を強く推奨します。
         </p>
       </div>
-    </div>
-
-  <div class="feedback-footer">
-    <div class="feedback-footer-title">💬 このタブへのフィードバック・改善要望</div>
-    <textarea class="feedback-textarea" id="fb-blclause" placeholder="ご意見・改善要望・追加してほしい機能などをお書きください"></textarea>
-    <div class="feedback-actions">
-      <button class="btn-primary" style="padding:8px 18px;font-size:13px;" onclick="sendFeedback('BL約款', 'fb-blclause')">送信</button>
-      <span class="feedback-status" id="fb-blclause-status"></span>
-    </div>
-  </div>
-  </div><!-- /tab-blclause -->
+    </div>  </div><!-- /tab-blclause -->
 
 
   <!-- ===================== Tab: 貿易管理令・他法令 ===================== -->
@@ -1682,17 +1648,7 @@ body {
           輸出管理違反が発覚した場合、輸出禁止措置（行政制裁）が科されることもあります。
         </p>
       </div>
-    </div>
-
-  <div class="feedback-footer">
-    <div class="feedback-footer-title">💬 このタブへのフィードバック・改善要望</div>
-    <textarea class="feedback-textarea" id="fb-regs" placeholder="ご意見・改善要望・追加してほしい機能などをお書きください"></textarea>
-    <div class="feedback-actions">
-      <button class="btn-primary" style="padding:8px 18px;font-size:13px;" onclick="sendFeedback('貿易管理令・他法令', 'fb-regs')">送信</button>
-      <span class="feedback-status" id="fb-regs-status"></span>
-    </div>
-  </div>
-  </div><!-- /tab-regs -->
+    </div>  </div><!-- /tab-regs -->
   <!-- ===================== Tab: ファイリングルール ===================== -->
   <!-- ===== tab-booking-tab ===== -->
   <div class="tab-content" id="tab-booking-tab">
@@ -1703,14 +1659,7 @@ body {
         <span style="font-size:11px;">🔐 = ログインが必要 ／ ⚠️ = URL未確認・要確認</span>
       </p>
       <div class="carrier-grid" id="booking-grid"></div>
-    </div>
-    <div class="feedback-footer">
-      <div class="feedback-footer-title">💬 このタブへのフィードバック・改善要望</div>
-      <textarea class="feedback-textarea" id="fb-booking-tab" placeholder="ご意見・改善要望などをお書きください"></textarea>
-      <button class="feedback-btn" onclick="sendFeedback('booking-tab')">送信</button>
-      <span class="feedback-status" id="fb-booking-tab-status"></span>
-    </div>
-  </div><!-- /tab-booking-tab -->
+    </div>  </div><!-- /tab-booking-tab -->
 
   <!-- ===== tab-si ===== -->
   <div class="tab-content" id="tab-si">
@@ -1739,14 +1688,7 @@ body {
       <div style="padding:10px 14px;background:#e8f5e9;border-radius:7px;border:1px solid #a5d6a7;font-size:11px;color:#1b5e20;">
         <strong>記載例：</strong> Description of Goods 欄の末尾に <code style="background:#fff;padding:1px 5px;border-radius:3px;">ACID: 1234567890123456</code> を追記
       </div>
-    </div>
-    <div class="feedback-footer">
-      <div class="feedback-footer-title">💬 このタブへのフィードバック・改善要望</div>
-      <textarea class="feedback-textarea" id="fb-si" placeholder="追加してほしい仕向地・ルールなどをお書きください"></textarea>
-      <button class="feedback-btn" onclick="sendFeedback('si')">送信</button>
-      <span class="feedback-status" id="fb-si-status"></span>
-    </div>
-  </div><!-- /tab-si -->
+    </div>  </div><!-- /tab-si -->
 
 
   <div class="tab-content" id="tab-filing">
@@ -2064,17 +2006,7 @@ body {
       <div style="padding:10px 14px;background:#fff8e1;border-radius:7px;border:1px solid #ffe082;font-size:11px;color:#e65100;">
         ⚠️ <strong>新ルール情報：</strong> UAEは通関制度を継続的に更新中です。最新情報は各船社・現地エージェントへ必ず確認してください。
       </div>
-    </div>
-
-  <div class="feedback-footer">
-    <div class="feedback-footer-title">💬 このタブへのフィードバック・改善要望</div>
-    <textarea class="feedback-textarea" id="fb-filing" placeholder="ご意見・改善要望・追加してほしい機能などをお書きください"></textarea>
-    <div class="feedback-actions">
-      <button class="btn-primary" style="padding:8px 18px;font-size:13px;" onclick="sendFeedback('ファイリングルール', 'fb-filing')">送信</button>
-      <span class="feedback-status" id="fb-filing-status"></span>
-    </div>
-  </div>
-  </div><!-- /tab-filing -->
+    </div>  </div><!-- /tab-filing -->
 
 
 
@@ -2192,18 +2124,7 @@ body {
         <button class="btn-clear" onclick="clearCalcResult('van-result')">クリア</button>
       </div>
       <div id="van-result" class="calc-result" style="display:none;"></div>
-    </div>
-
-
-  <div class="feedback-footer">
-    <div class="feedback-footer-title">💬 このタブへのフィードバック・改善要望</div>
-    <textarea class="feedback-textarea" id="fb-calc" placeholder="ご意見・改善要望・追加してほしい機能などをお書きください"></textarea>
-    <div class="feedback-actions">
-      <button class="btn-primary" style="padding:8px 18px;font-size:13px;" onclick="sendFeedback('計算（サイズ関連）', 'fb-calc')">送信</button>
-      <span class="feedback-status" id="fb-calc-status"></span>
-    </div>
-  </div>
-  </div><!-- /tab-calc -->
+    </div>  </div><!-- /tab-calc -->
 
   <!-- ===================== Tab: レート換算 ===================== -->
   <div class="tab-content" id="tab-rate">
@@ -2300,17 +2221,7 @@ body {
         ⚠️ 試算値です。実際の税額は品目・原産地・適用協定等により異なります。輸入申告は通関士にご相談ください。
       </p>
       <div id="duty-result" class="calc-result" style="display:none;"></div>
-    </div>
-
-  <div class="feedback-footer">
-    <div class="feedback-footer-title">💬 このタブへのフィードバック・改善要望</div>
-    <textarea class="feedback-textarea" id="fb-rate" placeholder="ご意見・改善要望・追加してほしい機能などをお書きください"></textarea>
-    <div class="feedback-actions">
-      <button class="btn-primary" style="padding:8px 18px;font-size:13px;" onclick="sendFeedback('計算（お金関連）', 'fb-rate')">送信</button>
-      <span class="feedback-status" id="fb-rate-status"></span>
-    </div>
-  </div>
-  </div><!-- /tab-rate -->
+    </div>  </div><!-- /tab-rate -->
 
   <!-- Footer -->
   <div class="footer">
@@ -2697,6 +2608,7 @@ function quickLookup() {
     alert(carrier + ' のトラッキングURLは現在調査中です。しばらくお待ちください。');
     return;
   }
+  saveTrackingHistory(carrier, num);
   if (info.trackingClipboard) {
     const relayUrl = 'relay.html?carrier=' + encodeURIComponent(carrier)
       + '&num=' + encodeURIComponent(num)
@@ -3114,6 +3026,55 @@ loadRouteArticles();
 buildBlRulesGrid();
 
 // ================================================================
+//  追跡番号 履歴スタック
+// ================================================================
+const TRACK_HIST_KEY = 'trackingHistory_v1';
+const TRACK_HIST_MAX = 5;
+
+function loadTrackingHistory() {
+  try { return JSON.parse(localStorage.getItem(TRACK_HIST_KEY)) || []; }
+  catch { return []; }
+}
+function saveTrackingHistory(carrier, num) {
+  let hist = loadTrackingHistory();
+  hist = hist.filter(h => !(h.carrier === carrier && h.num === num));
+  hist.unshift({ carrier, num, ts: new Date().toLocaleDateString('ja-JP') });
+  hist = hist.slice(0, TRACK_HIST_MAX);
+  localStorage.setItem(TRACK_HIST_KEY, JSON.stringify(hist));
+  renderTrackingHistory();
+}
+function deleteTrackingHistory(idx) {
+  const hist = loadTrackingHistory();
+  hist.splice(idx, 1);
+  localStorage.setItem(TRACK_HIST_KEY, JSON.stringify(hist));
+  renderTrackingHistory();
+}
+function renderTrackingHistory() {
+  const wrap = document.getElementById('track-history-wrap');
+  if (!wrap) return;
+  const hist = loadTrackingHistory();
+  if (hist.length === 0) { wrap.style.display = 'none'; return; }
+  wrap.style.display = 'block';
+  const list = document.getElementById('track-history-list');
+  list.innerHTML = hist.map((h, i) => `
+    <div class="track-history-item" onclick="applyTrackingHistory(${i})">
+      <span class="track-history-num">${h.num}</span>
+      <span class="track-history-carr">${h.carrier}</span>
+      <span class="track-history-date">${h.ts}</span>
+      <button class="track-history-del" onclick="event.stopPropagation();deleteTrackingHistory(${i})" title="削除">×</button>
+    </div>`).join('');
+}
+function applyTrackingHistory(idx) {
+  const hist = loadTrackingHistory();
+  const h = hist[idx];
+  if (!h) return;
+  document.getElementById('ql-carrier').value = h.carrier;
+  document.getElementById('ql-number').value  = h.num;
+  quickLookup();
+}
+renderTrackingHistory();
+
+// ================================================================
 //  Tab 7: 計算ツール
 // ================================================================
 
@@ -3164,7 +3125,8 @@ function appendCalcResult(id, html, summary) {
   entry.className = 'calc-history-entry';
   entry.innerHTML = `<div class="calc-history-header">
       <span class="calc-history-num">#${n}</span>
-      <span class="calc-history-summary">${summary}</span>
+      <span class="calc-history-summary">${summary||''}</span>
+      <button class="btn-copy-result" onclick="copyCalcResult(this)" title="整形テキストをコピー">📋 コピー</button>
       <button class="calc-history-close" onclick="const e=this.closest('.calc-history-entry'),c=e.parentElement;e.remove();if(!c.querySelector('.calc-history-entry'))c.style.display='none'">×</button>
     </div>${html}`;
   container.insertBefore(entry, container.firstChild);
@@ -3172,6 +3134,41 @@ function appendCalcResult(id, html, summary) {
 function clearCalcResult(id) {
   const el = document.getElementById(id);
   el.innerHTML = ''; el.style.display = 'none';
+}
+
+function copyCalcResult(btn) {
+  const entry = btn.closest('.calc-history-entry');
+  const num     = entry.querySelector('.calc-history-num')?.textContent?.trim() || '';
+  const summary = entry.querySelector('.calc-history-summary')?.textContent?.trim() || '';
+  const lines   = [`【計算結果 ${num}】`];
+  if (summary) lines.push(`入力: ${summary}`);
+  // calc-item 形式（通常の計算結果）
+  entry.querySelectorAll('.calc-item').forEach(item => {
+    const lbl = item.querySelector('.calc-item-label')?.textContent?.trim();
+    const val = item.querySelector('.calc-item-value')?.textContent?.trim();
+    if (lbl && val) lines.push(`・${lbl}: ${val}`);
+  });
+  // テーブル形式（保険料・関税計算など）
+  entry.querySelectorAll('tr').forEach(tr => {
+    const tds = tr.querySelectorAll('td');
+    if (tds.length >= 2) {
+      const lbl = tds[0]?.textContent?.trim();
+      const val = tds[1]?.textContent?.trim();
+      if (lbl && val) lines.push(`・${lbl}: ${val}`);
+    }
+  });
+  const text = lines.join('\n');
+  const orig = btn.textContent;
+  navigator.clipboard.writeText(text).then(() => {
+    btn.textContent = '✅ コピー完了';
+    btn.style.cssText += 'border-color:#5a8a52;color:#3a5c36;';
+    setTimeout(() => { btn.textContent = orig; btn.style.borderColor = ''; btn.style.color = ''; }, 1800);
+  }).catch(() => {
+    const ta = document.createElement('textarea');
+    ta.value = text; document.body.appendChild(ta); ta.select(); document.execCommand('copy'); document.body.removeChild(ta);
+    btn.textContent = '✅ コピー完了';
+    setTimeout(() => { btn.textContent = orig; }, 1800);
+  });
 }
 
 function calcAirCW() {
@@ -3341,9 +3338,102 @@ function calcVanning() {
     </div>`;
   }).join('');
 
+  // SVG断面図を生成
+  const svgHtml = Object.entries(CONT).map(([key, c]) => buildContainerSVG(key, c, [bl,bw,bh], noStack, rec.key)).join('');
+
   appendCalcResult('van-result', `<div class="calc-row">${cardsHtml}</div>
-  <p style="font-size:11px;color:#718096;margin-top:10px;">※ ダンネージなしの理論値。実際の積み付けは現場でご確認ください。</p>`,
+  <p style="font-size:11px;color:#718096;margin-top:10px;">※ ダンネージなしの理論値。実際の積み付けは現場でご確認ください。</p>
+  <div style="margin-top:12px;font-size:11px;font-weight:700;color:var(--text-md);">📐 コンテナ断面図（端面ビュー）</div>
+  <p style="font-size:11px;color:var(--text-lt);margin-top:2px;margin-bottom:6px;">幅方向・高さ方向に貨物がどう並ぶかを示します。破線＝ドア有効高さ。</p>
+  <div class="container-svg-wrap">${svgHtml}</div>`,
   `${bl}×${bw}×${bh}cm / ${bkg}kg${qty>0?' × '+qty+'個':''}${noStack?' / 段積み不可':''}`);
+}
+
+// コンテナ端面断面図SVGを生成
+function buildContainerSVG(key, cont, dims, noStack, recKey) {
+  const SVG_W = 170, SVG_H = 140;
+  const PAD_L = 14, PAD_T = 10, PAD_R = 24, PAD_B = 12;
+
+  const contW_cm = cont.w; // 内寸幅 (cm)
+  const contH_cm = cont.h; // 内寸高 (cm)
+
+  const drawW = SVG_W - PAD_L - PAD_R;
+  const drawH = SVG_H - PAD_T - PAD_B;
+  const scale  = Math.min(drawW / contW_cm, drawH / contH_cm);
+
+  const dispW  = contW_cm * scale;
+  const dispH  = contH_cm * scale;
+  const ox     = PAD_L + (drawW - dispW) / 2;
+  const oy     = PAD_T + (drawH - dispH) / 2;
+
+  // 最良の向き（幅×高さ方向の収納数最大）を探す
+  const PERMS = [[0,1,2],[0,2,1],[1,0,2],[1,2,0],[2,0,1],[2,1,0]];
+  let bestPerm = PERMS[0], bestFace = 0;
+  PERMS.forEach(p => {
+    const cols = Math.floor(contW_cm / dims[p[1]]);
+    const rows = noStack ? Math.min(1, Math.floor(contH_cm / dims[p[2]])) : Math.floor(contH_cm / dims[p[2]]);
+    if (cols * rows > bestFace) { bestFace = cols * rows; bestPerm = p; }
+  });
+
+  const boxW_cm = dims[bestPerm[1]];
+  const boxH_cm = dims[bestPerm[2]];
+  const cols    = Math.floor(contW_cm / boxW_cm);
+  const rows    = noStack ? Math.min(1, Math.floor(contH_cm / boxH_cm)) : Math.floor(contH_cm / boxH_cm);
+  const dispBW  = boxW_cm * scale;
+  const dispBH  = boxH_cm * scale;
+
+  // ドア有効高さ (cm): 20/40ft標準=228, HC=256
+  const doorH_cm  = key === '40hc' ? 256 : 228;
+  const dispDoorY = oy + dispH - doorH_cm * scale;
+  const overDoor  = (boxH_cm * rows) > doorH_cm;
+
+  // 貨物ボックスを描画（最大40個で打ち止め）
+  let boxes = '', count = 0;
+  for (let r = 0; r < rows && count < 40; r++) {
+    for (let c = 0; c < cols && count < 40; c++) {
+      const bx = ox + c * dispBW;
+      const by = oy + dispH - (r + 1) * dispBH;
+      boxes += `<rect x="${bx.toFixed(1)}" y="${by.toFixed(1)}"
+        width="${(dispBW - 0.6).toFixed(1)}" height="${(dispBH - 0.6).toFixed(1)}"
+        fill="#7bb8d4" stroke="#4a88a8" stroke-width="0.6" opacity="0.82"/>`;
+      count++;
+    }
+  }
+
+  const isRec      = key === recKey;
+  const framCol    = isRec ? '#3a7a32' : '#9a8a78';
+  const bgCol      = isRec ? '#eaf4e8' : '#f8f4ef';
+  const doorColor  = overDoor ? '#e53e3e' : '#a0a0a0';
+  const recBadge   = isRec ? ' ✅' : '';
+
+  return `<div class="container-svg-item">
+    <svg width="${SVG_W}" height="${SVG_H}" viewBox="0 0 ${SVG_W} ${SVG_H}"
+         style="border:1.5px solid ${framCol};border-radius:6px;background:${bgCol};">
+      <!-- コンテナ輪郭 -->
+      <rect x="${ox.toFixed(1)}" y="${oy.toFixed(1)}"
+            width="${dispW.toFixed(1)}" height="${dispH.toFixed(1)}"
+            fill="none" stroke="${framCol}" stroke-width="1.5"/>
+      <!-- 貨物ボックス -->
+      ${boxes}
+      <!-- ドア有効高さ ライン -->
+      <line x1="${ox.toFixed(1)}" y1="${dispDoorY.toFixed(1)}"
+            x2="${(ox+dispW).toFixed(1)}" y2="${dispDoorY.toFixed(1)}"
+            stroke="${doorColor}" stroke-width="1.0" stroke-dasharray="3,2"/>
+      <text x="${(ox+dispW+2).toFixed(1)}" y="${(dispDoorY+4).toFixed(1)}"
+            font-size="7" fill="${doorColor}">ドア</text>
+      ${overDoor ? `<text x="${(ox+dispW/2).toFixed(1)}" y="${(oy+dispH+9).toFixed(1)}"
+            font-size="7.5" fill="#e53e3e" text-anchor="middle" font-weight="bold">⚠ ドア高超過</text>` : ''}
+      <!-- 幅寸法ラベル -->
+      <text x="${(ox+dispW/2).toFixed(1)}" y="${(oy-2).toFixed(1)}"
+            font-size="7" fill="#666" text-anchor="middle">${contW_cm}cm</text>
+      <!-- 高さ寸法ラベル -->
+      <text x="${(ox-3).toFixed(1)}" y="${(oy+dispH/2).toFixed(1)}"
+            font-size="7" fill="#666" text-anchor="middle"
+            transform="rotate(-90,${(ox-3).toFixed(1)},${(oy+dispH/2).toFixed(1)})">${contH_cm}cm</text>
+    </svg>
+    <div class="container-svg-label">${cont.label}${recBadge}</div>
+    <div class="container-svg-sub">${cols}列×${rows}段 (端面${cols*rows}個/層)</div>
+  </div>`;
 }
 
 // ================================================================
@@ -3553,6 +3643,123 @@ async function sendFeedback(tabName, inputId) {
   if (isNaN(d.getTime())) return;
   el.textContent = d.toLocaleDateString('ja-JP', { year: 'numeric', month: 'short', day: 'numeric' });
 })();
+
+// ===== セクション別フィードバック =====
+const SECTION_FB_TAB_NAMES = {
+  'tracking':    'コンテナ追跡',
+  'vessel':      '本船動静',
+  'cycut':       'CY OPEN/CUT',
+  'route':       'サービス航路',
+  'surcharge':   'サーチャージ',
+  'bldo':        '書類',
+  'blrules':     'BL記載事項',
+  'freetime':    'フリータイム',
+  'incoterms':   'インコタームズ',
+  'sizes':       '種類・サイズ',
+  'insurance':   '海上貨物保険',
+  'blclause':    'BL約款',
+  'regs':        '貿易管理令・他法令',
+  'booking-tab': 'Booking',
+  'si':          'S/I',
+  'filing':      'ファイリングルール',
+  'calc':        '計算（サイズ）',
+  'rate':        '計算（お金）',
+};
+
+function toggleSectionFb(btn) {
+  const form = btn.nextElementSibling;
+  const isOpen = form.classList.toggle('open');
+  btn.textContent = isOpen ? '✕ 閉じる' : '💬 フィードバック';
+}
+
+async function submitSectionFb(btn, tabName, sectionName) {
+  const form = btn.closest('.section-fb-form');
+  const textarea = form.querySelector('.section-fb-textarea');
+  const statusEl = form.querySelector('.section-fb-status');
+  const text = textarea.value.trim();
+  if (!text) { alert('フィードバック内容を入力してください'); return; }
+
+  statusEl.style.color = '#718096';
+  statusEl.textContent = '送信中...';
+  btn.disabled = true;
+
+  try {
+    const res = await fetch('/.netlify/functions/feedback', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ tabName, sectionName, feedbackText: text })
+    });
+
+    if (res.ok) {
+      statusEl.style.color = '#48bb78';
+      statusEl.textContent = '✅ 送信しました！';
+      textarea.value = '';
+      setTimeout(() => {
+        statusEl.textContent = '';
+        form.classList.remove('open');
+        btn.previousElementSibling.textContent = '💬 フィードバック';
+      }, 2000);
+    } else {
+      let errMsg = 'HTTP ' + res.status;
+      try { const err = await res.json(); errMsg = err.message || err.error || errMsg; } catch {}
+      statusEl.style.color = '#e53e3e';
+      statusEl.textContent = '❌ エラー: ' + errMsg;
+    }
+  } catch(e) {
+    statusEl.style.color = '#e53e3e';
+    statusEl.textContent = '❌ 送信失敗: ' + (e.message || 'ネットワークエラー');
+  } finally {
+    btn.disabled = false;
+  }
+}
+
+function getSectionName(titleEl) {
+  // テキストノードのみを連結して、絵文字・記号を除去
+  let text = Array.from(titleEl.childNodes)
+    .filter(n => n.nodeType === Node.TEXT_NODE)
+    .map(n => n.textContent)
+    .join('')
+    .trim();
+  // 先頭の絵文字・記号・空白を除去
+  text = text.replace(/^[\u0000-\u007F\s]*/, '').trim();  // ASCII記号除去
+  // Unicodeの絵文字を除去
+  text = text.replace(/[\u{1F300}-\u{1FFFF}\u{2600}-\u{27BF}]/gu, '').trim();
+  // 連続空白を整理
+  text = text.replace(/\s+/g, ' ').trim();
+  return text || titleEl.textContent.trim().slice(0, 30);
+}
+
+function initSectionFeedbacks() {
+  document.querySelectorAll('.tab-content .card').forEach(card => {
+    const titleEl = card.querySelector('.section-title');
+    if (!titleEl) return;
+    const tabEl = card.closest('.tab-content');
+    if (!tabEl) return;
+
+    const tabKey = tabEl.id.replace(/^tab-/, '');
+    const tabName = SECTION_FB_TAB_NAMES[tabKey] || tabKey;
+    const sectionName = getSectionName(titleEl);
+
+    const esc = s => s.replace(/\\/g, '\\\\').replace(/'/g, "\\'");
+
+    card.insertAdjacentHTML('beforeend', `
+      <div class="section-fb">
+        <button class="section-fb-btn" onclick="toggleSectionFb(this)">💬 フィードバック</button>
+        <div class="section-fb-form">
+          <textarea class="section-fb-textarea" placeholder="${sectionName} へのご意見・改善要望などをどうぞ"></textarea>
+          <div class="section-fb-actions">
+            <button class="btn-primary" style="padding:7px 14px;font-size:12px;"
+              onclick="submitSectionFb(this,'${esc(tabName)}','${esc(sectionName)}')">送信</button>
+            <span class="section-fb-status"></span>
+          </div>
+        </div>
+      </div>
+    `);
+  });
+}
+
+document.addEventListener('DOMContentLoaded', initSectionFeedbacks);
+
 </script>
 </body>
 </html>
